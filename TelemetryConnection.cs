@@ -101,13 +101,13 @@ namespace IRacingSpeedTrainer
             {
                 if (this.iRacing == null)
                 {
-                    this.iRacing = new iRacingEvents(1000 / 60);
+                    this.iRacing = new iRacingEvents(1000 / UserSettings.Default.TelemetryPerSec);
                     this.iRacing.Connected += IRacing_Connected;
                     this.iRacing.Disconnected += IRacing_Disconnected;
                     this.iRacing.NewData += IRacing_NewData;
                     this.iRacing.NewSessionData += IRacing_NewSessionData;
                 }
-                Trace.TraceInformation("Connection initializing");
+                Trace.TraceInformation("Connection initializing, {0} Hz", UserSettings.Default.TelemetryPerSec);
                 this.iRacing.StartListening();
                 this.ConnectionState = ConnectionStates.Listening;
             }
@@ -217,7 +217,11 @@ namespace IRacingSpeedTrainer
 
         public void Dispose()
         {
-            ((IDisposable?)iRacing)?.Dispose();
+            try
+            {
+                ((IDisposable?)iRacing)?.Dispose();
+            } catch 
+            { }
         }
     }
 }

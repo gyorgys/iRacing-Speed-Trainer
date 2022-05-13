@@ -7,135 +7,169 @@ namespace IRacingSpeedTrainer
 
     public partial class MainForm : Form
     {
-        private enum State
-        {
-            None = 0,
-            Stopped,
-            Starting,
-            Connected,
-            Disconnected,
-        }
-
-        private State state = State.None;
-        private iRacingEvents? iRacing = null;
-        private string? currentTrack = null;
-        private float? currentDistance = null;
-        private BindingList<float> points = new BindingList<float>();
+        private TelemetryConnection? iRacing = null;
+        private float currentDistance = -1;
+        private float currentDistancePct = -1;
+        private float currentSpeedMps = 0;
+        private TrackSpeedMarkerData? trackMarkers = null;
+        private string fullTrackName = "";
         private SpeechSynthesizer synth = new SpeechSynthesizer();
 
         public MainForm()
         {
             InitializeComponent();
-            this.pointsListBox.DataSource = this.points;
-            setState(State.Stopped);
+            UpdateConnectionState();
+            UpdateCarState();
             synth.SetOutputToDefaultAudioDevice();
             synth.SelectVoiceByHints(VoiceGender.Male, VoiceAge.Adult);
             synth.Rate = 2;
         }
 
-        private void setState(State newState)
+        private void UpdateConnectionState()
         {
-            if (newState == this.state)
+            this.speedLabel.Text = "";
+            switch(this.iRacing?.ConnectionState ?? TelemetryConnection.ConnectionStates.Stopped)
+            {
+                case TelemetryConnection.ConnectionStates.Stopped:
+                    this.startStopButton.Text = "Start";
+                    this.startStopButton.Enabled = true;
+                    break;
+                case TelemetryConnection.ConnectionStates.Listening:
+                    this.startStopButton.Text = "Stop";
+                    this.startStopButton.Enabled = true;
+                    break;
+                case TelemetryConnection.ConnectionStates.Error:
+                    this.startStopButton.Text = "Start";
+                    this.startStopButton.Enabled = false;
+                    break;
+                case TelemetryConnection.ConnectionStates.Connected:
+                    this.startStopButton.Text = "Stop";
+                    this.startStopButton.Enabled = true;
+                    break;
+            }
+            this.UpdateStatusLabel();
+        }
+
+        private void UpdateCarState()
+        {
+            var state = this.iRacing?.CarState ?? TelemetryConnection.CarStates.None;
+            this.toolStripDataLabel.Text = state.ToString();
+        }
+
+        private void UpdateStatusLabel()
+        {
+            switch (this.iRacing?.ConnectionState ?? TelemetryConnection.ConnectionStates.Stopped)
+            {
+                case TelemetryConnection.ConnectionStates.Stopped:
+                    this.toolStripStatusLabel.Text = "Stopped";
+                    break;
+                case TelemetryConnection.ConnectionStates.Listening:
+                    this.toolStripStatusLabel.Text = "Listening";
+                    break;
+                case TelemetryConnection.ConnectionStates.Error:
+                    this.toolStripStatusLabel.Text = "Error";
+                    break;
+                case TelemetryConnection.ConnectionStates.Connected:
+                    this.toolStripStatusLabel.Text = String.Format(
+                        "Connected: {0}", this.iRacing?.CurrentTrack?.DisplayName ?? "");
+                    break;
+            }
+        }
+
+
+        private void StartListening()
+        {
+            if (this.iRacing == null)
+            {
+                this.iRacing = new TelemetryConnection();
+                this.iRacing.ConnectionStateChanged += IRacing_ConnectionStateChanged;
+                this.iRacing.CarStateChanged += IRacing_CarStateChanged;
+                this.iRacing.NewTelemetryData += IRacing_NewTelemetryData;
+                this.iRacing.CurrentTrackChanged += IRacing_CurrentTrackChanged;
+            }
+            this.iRacing.Start();
+        }
+
+        private void IRacing_CurrentTrackChanged(object? sender, TrackInfo? track)
+        {
+            UpdateStatusLabel();
+        }
+
+        private void IRacing_NewTelemetryData(object? sender, Telemetry tele)
+        {
+            this.currentSpeedMps = tele.Speed;
+            var speed = Math.Round(this.currentSpeedMps * 2.23694, 1);
+            float previousDistance = this.currentDistance;
+            this.currentDistance = tele.LapDist;
+            this.currentDistancePct = tele.LapDistPct * 100.0f;
+            this.toolStripDataLabel.Text = String.Format("Speed: {0} @{1:0.0}({2:0.00}%)", speed, this.currentDistance, this.currentDistancePct);
+            if (previousDistance >= 0 && this.trackMarkers != null)
+            {
+                foreach (var marker in this.trackMarkers.Markers)
+                {
+                    if (!marker.IsRegion)
+                        if (previousDistance < marker.Start && this.currentDistance >= marker.Start)
+                        {
+                            this.AnnounceSpeed(speed, marker.Start);
+                        }
+                }
+            }
+        }
+
+        private void IRacing_CarStateChanged(object? sender, TelemetryConnection.CarStates e)
+        {
+            Trace.TraceInformation(String.Format("Car State {0}", e.ToString()));
+            this.UpdateCarState();
+        }
+
+        private void IRacing_ConnectionStateChanged(object? sender, TelemetryConnection.ConnectionStates e)
+        {
+            Trace.TraceInformation(String.Format("Connection State {0}", e.ToString()));
+            this.UpdateConnectionState();
+        }
+
+        private void SetCurrentTrack(string? trackName, string? fullTrackName)
+        {
+            if (this.trackMarkers?.TrackName == trackName)
             {
                 return;
             }
-            Trace.TraceInformation(String.Format("State changing to {0}", newState.ToString()));
-            this.speedLabel.Text = "";
-            switch(newState)
+            this.fullTrackName = fullTrackName ?? "";
+            if (this.trackMarkers != null)
             {
-                case State.Stopped:
-                    this.startStopButton.Text = "Start";
-                    this.startStopButton.Enabled = true;
-                    this.toolStripStatusLabel.Text = "Stopped";
-                    this.toolStripDataLabel.Text = "";
-                    break;
-                case State.Starting:
-                    this.startStopButton.Text = "Starting";
-                    this.startStopButton.Enabled = false;
-                    this.toolStripStatusLabel.Text = "Starting";
-                    break;
-                case State.Disconnected:
-                    this.startStopButton.Text = "Stop";
-                    this.startStopButton.Enabled = true;
-                    this.toolStripStatusLabel.Text = "Disconnected";
-                    break;
-                case State.Connected:
-                    this.startStopButton.Text = "Stop";
-                    this.startStopButton.Enabled = true;
-                    this.toolStripStatusLabel.Text = "Connected";
-                    break;
-            }
-            this.state = newState;
-        }
-
-        private void startListening()
-        {
-            this.setState(State.Starting);
-            this.currentTrack = null;
-            try
-            {
-                if (this.iRacing == null)
+                if (this.trackMarkers.IsDirty)
                 {
-                    this.iRacing = new iRacingEvents(1000 / 60);
-                    this.iRacing.Connected += IRacing_Connected;
-                    this.iRacing.Disconnected += IRacing_Disconnected;
-                    this.iRacing.NewData += IRacing_NewData;
-                    this.iRacing.NewSessionData += IRacing_NewSessionData;
+                    this.trackMarkers.Save();
                 }
-                //this.iRacing.StopListening();
-                this.setState(State.Disconnected);
-                this.iRacing.StartListening();
-            } catch (Exception ex)
-            {
-                this.iRacing = null;
-                MessageBox.Show(this, ex.Message, "Error connecting to iRacing",MessageBoxButtons.OK, MessageBoxIcon.Error);
-                this.setState(State.Stopped);
+                this.trackMarkers = null;
+                this.addPosButton.Enabled = false;
             }
+            if (trackName != null)
+            {
+                this.trackMarkers = new TrackSpeedMarkerData(trackName);
+                this.trackMarkers.Load();
+                this.pointsListBox.DataSource = this.trackMarkers.Markers;
+                this.addPosButton.Enabled = true;
+            }
+            this.UpdateStatusLabel();
         }
 
         private void IRacing_NewSessionData(DataSample obj)
         {
-            var data = obj.LastSample?.SessionData;
+            var data = obj.SessionData;
             if (data != null)
             { 
-                this.currentTrack = data.WeekendInfo.TrackName; 
+                this.SetCurrentTrack(data.WeekendInfo.TrackName, String.Format("{0} - {1}", data.WeekendInfo.TrackDisplayShortName, data.WeekendInfo.TrackConfigName)); 
+                Trace.TraceInformation(String.Format("New session on {0}", data.WeekendInfo.TrackName));
             }
             else
             {
-                this.currentTrack = null;
+                this.SetCurrentTrack(null, null);
+                Trace.TraceWarning("New session with no track");
             }
         }
 
-        private void IRacing_NewData(DataSample obj)
-        {
-            var sample = obj.LastSample;
-            if (sample != null)
-            {
-                string track = sample.SessionData.WeekendInfo.TrackName;
-                long carIndex = sample.SessionData.DriverInfo.DriverCarIdx;
-                var speed = Math.Round(sample.Telemetry.Speed * 2.23694, 1);
-                float previousDistance = this.currentDistance ?? -1;
-                this.currentDistance = sample.Telemetry.LapDist;
-                var distancePct = sample.Telemetry.LapDistPct * 100.0;
-                this.toolStripDataLabel.Text = String.Format("Speed: {0} @{1:0.0}({2:0.00}%) Track: {3}", speed, this.currentDistance, distancePct, track);
-                if (previousDistance >= 0)
-                {
-                    foreach (var point in this.points)
-                    {
-                        if (previousDistance < point && this.currentDistance >= point)
-                        {
-                            this.announceSpeed(speed, point);
-                        }
-                    }
-                }
-            } 
-            else
-            {
-                this.toolStripDataLabel.Text = "no data";
-            }
-        }
-
-        private void announceSpeed(double speed, float point)
+        private void AnnounceSpeed(double speed, float point)
         {
             this.speedLabel.Text = String.Format("{0} MPH @ {1:0.0}", speed, point);
             int hunderds = (int)Math.Floor(speed / 100);
@@ -148,52 +182,40 @@ namespace IRacingSpeedTrainer
             }
             promptBuilder.AppendText(remainder.ToString("0.0"));
             synth.Speak(promptBuilder);
-
         }
 
-        private void stopListening()
+        private void StopListening()
         {
-            if (this.iRacing != null)
-            {
-                this.iRacing.StopListening();
-            }
-            this.setState(State.Stopped);
-        }
-
-        private void IRacing_Disconnected()
-        {
-            this.setState(State.Disconnected);
-        }
-
-        private void IRacing_Connected()
-        {
-            this.setState(State.Connected);
+            this.iRacing?.Stop();
         }
 
         private void startStopButton_Click(object sender, EventArgs e)
         {
-            if(this.state == State.Stopped)
+            var state = this.iRacing?.ConnectionState ?? TelemetryConnection.ConnectionStates.Stopped;
+            if(state == TelemetryConnection.ConnectionStates.Stopped)
             {
-                this.startListening();
-            } else
+                this.StartListening();
+            } 
+            else
             {
-                this.stopListening();
+                this.StopListening();
             }
         }
 
         private void addPosButton_Click(object sender, EventArgs e)
         {
             var distance = this.currentDistance;
-            if (distance != null)
+            if (distance >= 0)
             {
-                this.points.Add(distance ?? 0);
+                this.trackMarkers?.Markers.Add(new SpeedMarker { Start = distance});
+                this.trackMarkers?.Save();
             }
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             double speed = Double.Parse(textBox1.Text);
-            this.announceSpeed(speed, 0);
+            this.AnnounceSpeed(speed, 0);
         }
     }
 }

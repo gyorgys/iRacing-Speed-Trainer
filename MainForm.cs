@@ -4,6 +4,7 @@ namespace IRacingSpeedTrainer
     using System.ComponentModel;
     using System.Diagnostics;
     using System.Speech.Synthesis;
+    using SharpDX.DirectInput;
  
     public partial class MainForm : Form
     {
@@ -14,6 +15,8 @@ namespace IRacingSpeedTrainer
         private TrackData? trackData = null;
         private string fullTrackName = "";
         private SpeechSynthesizer synth = new SpeechSynthesizer();
+        private GameControllers controllers = new GameControllers();
+        private System.Windows.Forms.Timer inputPollTimer = new System.Windows.Forms.Timer();
 
         public MainForm()
         {
@@ -25,13 +28,14 @@ namespace IRacingSpeedTrainer
             synth.Rate = 2;
         }
 
-
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
+            this.controllers.Dispose();
             if (this.trackData?.IsDirty ?? false)
             {
                 this.trackData?.Save();
             }
+            this.inputPollTimer.Stop();
             this.iRacing?.Dispose();
             this.iRacing = null;
             base.OnFormClosing(e);
@@ -221,6 +225,20 @@ namespace IRacingSpeedTrainer
         {
             double speed = Double.Parse(textBox1.Text);
             this.AnnounceSpeed(speed, 0);
+        }
+
+        private void InputPollTimer_Tick(object? sender, EventArgs e)
+        {
+           this.label1.Text = controllers.GetState();
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            this.controllers.ScanAndAquire(this);
+            this.gameControllersList.DataSource = this.controllers.ControllerData;
+            this.inputPollTimer.Interval = 1000 / 30;
+            this.inputPollTimer.Start();
+            this.inputPollTimer.Tick += InputPollTimer_Tick;
         }
     }
 }

@@ -26,6 +26,13 @@ namespace IRacingSpeedTrainer
             synth.SetOutputToDefaultAudioDevice();
             synth.SelectVoiceByHints(VoiceGender.Male, VoiceAge.Adult);
             synth.Rate = 2;
+            this.controllers.ControllersChanged += Controllers_ControllersChanged;
+        }
+
+        private void Controllers_ControllersChanged(object? sender, EventArgs e)
+        {
+            this.gameControllersList.DataSource = null;
+            this.gameControllersList.DataSource = this.controllers.ControllerData;
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
@@ -229,12 +236,12 @@ namespace IRacingSpeedTrainer
 
         private void InputPollTimer_Tick(object? sender, EventArgs e)
         {
-           this.label1.Text = controllers.GetState();
+           this.label1.Text = String.Join(" + ", controllers.GetInputs());
         }
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            this.controllers.ScanAndAquire(this);
+            this.controllers.ScanAndAquire(this.Handle);
             this.gameControllersList.DataSource = this.controllers.ControllerData;
             this.inputPollTimer.Interval = 1000 / 30;
             this.inputPollTimer.Start();

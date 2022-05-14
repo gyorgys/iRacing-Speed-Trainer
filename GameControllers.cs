@@ -9,7 +9,7 @@ namespace IRacingSpeedTrainer
 {
     internal struct ControllerData
     {
-        public string Id;
+        public Guid Id;
         public string Name;
 
         override public string ToString()
@@ -24,10 +24,13 @@ namespace IRacingSpeedTrainer
         private List<Joystick> joysticks = new List<Joystick>();
         private Keyboard? keyboard = null;
         private bool disposedValue;
+        private IntPtr? windowHandle = null;
 
         private List<ControllerData> controllerData = new List<ControllerData>();
 
         public IList<ControllerData> ControllerData => this.controllerData;
+
+        public event EventHandler? ControllersChanged = null;
 
 
         protected virtual void Dispose(bool disposing)
@@ -36,15 +39,7 @@ namespace IRacingSpeedTrainer
             {
                 if (disposing)
                 {
-                    foreach (var joystick in this.joysticks)
-                    {
-                        joystick.Unacquire();
-                        joystick.Dispose();
-                    }
-                    this.joysticks.Clear();
-                    this.keyboard?.Unacquire();
-                    this.keyboard?.Dispose();
-                    this.keyboard = null;
+                    this.Unacquire();
                     this.di.Dispose();
                 }
                 disposedValue = true;
@@ -58,24 +53,25 @@ namespace IRacingSpeedTrainer
             GC.SuppressFinalize(this);
         }
 
-        public void ScanAndAquire(Form mainForm)
+        public void ScanAndAquire(IntPtr mainFormHandle)
         {
-            var windowHandle = mainForm.Handle;
+            this.windowHandle = mainFormHandle;
             var devices = di.GetDevices(DeviceClass.GameControl, DeviceEnumerationFlags.AttachedOnly);
+            int deviceId = 0;
             foreach (var device in devices)
             {
                 var controller = new Joystick(di, device.InstanceGuid);
                 joysticks.Add(controller);
-                controller.SetCooperativeLevel(windowHandle, CooperativeLevel.Background | CooperativeLevel.NonExclusive);
+                controller.SetCooperativeLevel(mainFormHandle, CooperativeLevel.Background | CooperativeLevel.NonExclusive);
                 controller.Acquire();
-                this.controllerData.Add(new IRacingSpeedTrainer.ControllerData { Id = device.InstanceGuid.ToString(), Name = device.InstanceName });
+                this.controllerData.Add(new IRacingSpeedTrainer.ControllerData { Id = device.InstanceGuid, Name = String.Format("Dev {0}: {1}", deviceId++, device.InstanceName) });
             }
             var keyboardDevice = di.GetDevices(DeviceClass.Keyboard, DeviceEnumerationFlags.AttachedOnly).First();
             if (keyboardDevice != null)
             {
-                this.controllerData.Add(new IRacingSpeedTrainer.ControllerData { Id = keyboardDevice.InstanceGuid.ToString(), Name = keyboardDevice.InstanceName });
+                this.controllerData.Add(new IRacingSpeedTrainer.ControllerData { Id = keyboardDevice.InstanceGuid, Name = keyboardDevice.InstanceName });
                 this.keyboard = new Keyboard(di);
-                this.keyboard.SetCooperativeLevel(windowHandle, CooperativeLevel.Background | CooperativeLevel.NonExclusive);
+                this.keyboard.SetCooperativeLevel(mainFormHandle, CooperativeLevel.Background | CooperativeLevel.NonExclusive);
                 this.keyboard.Acquire();
             }
             else
@@ -83,35 +79,76 @@ namespace IRacingSpeedTrainer
                 this.keyboard = null;
             }
         }
-
-        public string GetState()
+        private void Unacquire()
         {
-            string text = "<none>";
             foreach (var joystick in this.joysticks)
             {
-                joystick.Poll();
-                var state = joystick.GetCurrentState();
-                var buttons = state.Buttons;
-                for (int i = 0; i < buttons.Length; i++)
+                joystick.Unacquire();
+                joystick.Dispose();
+            }
+            this.joysticks.Clear();
+            this.keyboard?.Unacquire();
+            this.keyboard?.Dispose();
+            this.keyboard = null;
+            this.controllerData.Clear();
+        }
+
+        private void RescanControllers()
+        {
+            this.Unacquire();
+            if (this.windowHandle != null)
+            {
+                this.ScanAndAquire(this.windowHandle ?? IntPtr.Zero);
+            }
+            this.ControllersChanged?.Invoke(this, new EventArgs());
+        }
+
+        public List<string> GetInputs()
+        {
+            string text = "<none>";
+            List<string> inputs = new List<string>();
+            try
+            {
+                int deviceId = 0;
+                foreach (var joystick in this.joysticks)
                 {
-                    if (buttons[i])
+                    joystick.Poll();
+                    var state = joystick.GetCurrentState();
+                    var buttons = state.Buttons;
+                    var hat = state.PointOfViewControllers;
+                    for (int i = 0; i < buttons.Length; i++)
                     {
-                        text = String.Format("Gamepad {0} BTN:{1}", joystick.Information.InstanceName, i);
+                        if (buttons[i])
+                        {
+                            inputs.Add(String.Format("Dev {0} Btn {1}", deviceId, i));
+                        }
+                    }
+                    deviceId++;
+                }
+                if (this.keyboard != null)
+                {
+                    this.keyboard.Poll();
+                    var state = this.keyboard.GetCurrentState();
+                    var keys = state.PressedKeys;
+                    if (keys != null && keys.Count > 0)
+                    {
+                        var keyStrings = keys.Select(k => k.ToString()).ToList();
+                        foreach (string keyString in keyStrings) {
+                            inputs.Add(keyString);
+                        }
                     }
                 }
             }
-            if (this.keyboard != null)
+            catch (SharpDX.SharpDXException ex)
             {
-                this.keyboard.Poll();
-                var state = this.keyboard.GetCurrentState();
-                var keys = state.PressedKeys;
-                if (keys != null && keys.Count > 0)
+                if (ex.Descriptor.ApiCode == "InputLost")
                 {
-                    var keyStrings = keys.Select(k => k.ToString()).ToList();
-                    text = String.Format("{0} [{1}]", keyboard.Information.InstanceName, String.Join("+", keyStrings));
+                    this.RescanControllers();
+                    return new List<string>();
                 }
+                throw ex;
             }
-            return text;
+            return inputs;
         }
     }
 }

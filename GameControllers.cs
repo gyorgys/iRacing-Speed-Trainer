@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using SharpDX.DirectInput;
 
 namespace IRacingSpeedTrainer
 {
-    internal struct ControllerData
+    internal struct ControllerInfo
     {
         public Guid Id;
         public string Name;
@@ -24,14 +24,23 @@ namespace IRacingSpeedTrainer
         private List<Joystick> joysticks = new List<Joystick>();
         private Keyboard? keyboard = null;
         private bool disposedValue;
-        private IntPtr? windowHandle = null;
+        private Form? mainForm = null;
+        private IntPtr mainFormHandle = IntPtr.Zero;
+        private System.Threading.Timer? timer = null;
+        private int inTimerFunc = 0;
 
-        private List<ControllerData> controllerData = new List<ControllerData>();
+        private List<ControllerInfo> connectedControllers = new List<ControllerInfo>();
+        private HashSet<string> currentInputs = new HashSet<string>();
 
-        public IList<ControllerData> ControllerData => this.controllerData;
+        public IReadOnlyList<ControllerInfo> ConnectedControllers => this.connectedControllers;
+        public IReadOnlySet<string> CurrentInputs => this.currentInputs;
 
-        public event EventHandler? ControllersChanged = null;
+        public event EventHandler<IReadOnlyList<ControllerInfo>>? ControllersChanged = null;
+        public event EventHandler<IReadOnlySet<string>>? InputsChanged = null;
 
+        public bool IsListening { get; private set; }
+        public bool IsMonitoredOnly { get; set; }
+        public ISet<string> MonitoredInputSet { get; init; } = new HashSet<string>();
 
         protected virtual void Dispose(bool disposing)
         {
@@ -39,6 +48,7 @@ namespace IRacingSpeedTrainer
             {
                 if (disposing)
                 {
+                    this.timer?.Dispose();
                     this.Unacquire();
                     this.di.Dispose();
                 }
@@ -53,9 +63,37 @@ namespace IRacingSpeedTrainer
             GC.SuppressFinalize(this);
         }
 
-        public void ScanAndAquire(IntPtr mainFormHandle)
+        public void StartListening(Form mainForm)
         {
-            this.windowHandle = mainFormHandle;
+            this.mainForm = mainForm;
+            this.mainFormHandle = mainForm.Handle;
+            this.ScanAndAquire();
+            this.timer = new System.Threading.Timer(this.TimerFunc, null, 1000 / 30, 1000 / 30);
+        }
+
+        public void StopListening()
+        {
+            this.timer?.Dispose();
+            this.timer = null;
+            this.Unacquire();
+        }
+
+        private void TimerFunc(Object? stateInfo) {
+            if (0 == Interlocked.CompareExchange(ref this.inTimerFunc, 1, 0))
+            {
+                try
+                {
+                    this.UpdateInputs(this.IsMonitoredOnly);
+                }
+                finally
+                { 
+                    this.inTimerFunc = 0; 
+                }
+            }
+        }
+
+        private void ScanAndAquire()
+        {
             var devices = di.GetDevices(DeviceClass.GameControl, DeviceEnumerationFlags.AttachedOnly);
             int deviceId = 0;
             foreach (var device in devices)
@@ -64,12 +102,12 @@ namespace IRacingSpeedTrainer
                 joysticks.Add(controller);
                 controller.SetCooperativeLevel(mainFormHandle, CooperativeLevel.Background | CooperativeLevel.NonExclusive);
                 controller.Acquire();
-                this.controllerData.Add(new IRacingSpeedTrainer.ControllerData { Id = device.InstanceGuid, Name = String.Format("Dev {0}: {1}", deviceId++, device.InstanceName) });
+                this.connectedControllers.Add(new IRacingSpeedTrainer.ControllerInfo { Id = device.InstanceGuid, Name = String.Format("Dev {0}: {1}", deviceId++, device.InstanceName) });
             }
             var keyboardDevice = di.GetDevices(DeviceClass.Keyboard, DeviceEnumerationFlags.AttachedOnly).First();
             if (keyboardDevice != null)
             {
-                this.controllerData.Add(new IRacingSpeedTrainer.ControllerData { Id = keyboardDevice.InstanceGuid, Name = keyboardDevice.InstanceName });
+                this.connectedControllers.Add(new IRacingSpeedTrainer.ControllerInfo { Id = keyboardDevice.InstanceGuid, Name = keyboardDevice.InstanceName });
                 this.keyboard = new Keyboard(di);
                 this.keyboard.SetCooperativeLevel(mainFormHandle, CooperativeLevel.Background | CooperativeLevel.NonExclusive);
                 this.keyboard.Acquire();
@@ -90,23 +128,36 @@ namespace IRacingSpeedTrainer
             this.keyboard?.Unacquire();
             this.keyboard?.Dispose();
             this.keyboard = null;
-            this.controllerData.Clear();
+            this.connectedControllers.Clear();
         }
 
         private void RescanControllers()
         {
             this.Unacquire();
-            if (this.windowHandle != null)
-            {
-                this.ScanAndAquire(this.windowHandle ?? IntPtr.Zero);
-            }
-            this.ControllersChanged?.Invoke(this, new EventArgs());
+            this.ScanAndAquire();
+            this.mainForm?.Invoke(this.ControllersChanged, this, this.ConnectedControllers);
         }
 
-        public List<string> GetInputs()
+        private void UpdateInputs(bool monitoredOnly)
         {
-            string text = "<none>";
-            List<string> inputs = new List<string>();
+            var activeInputs = this.GetInputs();
+            if (monitoredOnly)
+            {
+                activeInputs.IntersectWith(this.MonitoredInputSet);
+            }
+            if (!this.currentInputs.SetEquals(activeInputs))
+            {
+                this.currentInputs = activeInputs;
+                if (this.mainForm != null)
+                {
+                    this.mainForm?.Invoke(this.InputsChanged, this, activeInputs);
+                }
+            }
+        }
+
+        private HashSet<string> GetInputs()
+        {
+            HashSet<string> inputs = new HashSet<string>();
             try
             {
                 int deviceId = 0;
@@ -144,7 +195,7 @@ namespace IRacingSpeedTrainer
                 if (ex.Descriptor.ApiCode == "InputLost")
                 {
                     this.RescanControllers();
-                    return new List<string>();
+                    return new HashSet<string>();
                 }
                 throw ex;
             }

@@ -88,11 +88,11 @@ namespace IRacingSpeedTrainer
         {
             if (this.IsRegion)
             {
-                return String.Format("{0} {1}", this.Start, this.End);
+                return String.Format("{0:0.0} - {1:0.0}", this.Start, this.End);
             }
             else
             {
-                return String.Format("{0}", this.Start);
+                return String.Format("{0:0.0}", this.Start);
             }
         }
 

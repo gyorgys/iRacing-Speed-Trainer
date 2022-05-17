@@ -33,6 +33,14 @@ namespace IRacingSpeedTrainer
             TrackMarkers = markers;
         }
 
+        public void UpdateMarkers(IList<TrackMarker> markers)
+        {
+            lastPosition = INVALID_POS;
+            currentRegion = null;
+            currentRegionData = new List<iRacingSDK.Telemetry>();
+            TrackMarkers = markers;
+        }
+
         public void ProcessNewData(iRacingSDK.Telemetry tele)
         {
             var previousPosition = this.lastPosition;
@@ -75,8 +83,8 @@ namespace IRacingSpeedTrainer
             }
         }
 
-        public EventHandler<SingleTelemetryEventArgs>? PointPassed = null;
-        public EventHandler<SingleTelemetryEventArgs>? RegionEntered = null;
-        public EventHandler<MultiTelemetryEventArgs>? RegionPassed = null;
+        public event EventHandler<SingleTelemetryEventArgs>? PointPassed = null;
+        public event EventHandler<SingleTelemetryEventArgs>? RegionEntered = null;
+        public event EventHandler<MultiTelemetryEventArgs>? RegionPassed = null;
     }
 }

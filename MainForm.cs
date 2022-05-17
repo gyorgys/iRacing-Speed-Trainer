@@ -10,13 +10,16 @@ namespace IRacingSpeedTrainer
     {
         private TelemetryConnection? iRacing = null;
         private float currentDistance = -1;
-        private float currentDistancePct = -1;
-        private float currentSpeedMps = 0;
         private TrackData? trackData = null;
         private string fullTrackName = "";
         private SpeechSynthesizer synth = new SpeechSynthesizer();
         private GameControllers controllers = new GameControllers();
-        private System.Windows.Forms.Timer inputPollTimer = new System.Windows.Forms.Timer();
+        private TrackPositionMonitor monitor = new TrackPositionMonitor(new List<TrackMarker>());
+
+        private event EventHandler<string>? NextInputDetected = null;
+
+        private DateTime sectionMarkTime = DateTime.Now;
+        private float? sectionMarkDistance = null;
 
         public MainForm()
         {
@@ -26,23 +29,71 @@ namespace IRacingSpeedTrainer
             synth.SetOutputToDefaultAudioDevice();
             synth.SelectVoiceByHints(VoiceGender.Male, VoiceAge.Adult);
             synth.Rate = 2;
+            this.controllers.IsMonitoredOnly = true;
             this.controllers.ControllersChanged += Controllers_ControllersChanged;
+            this.controllers.InputsChanged += Controllers_InputsChanged;
+            this.addPositionButton.Enabled = false;
+            this.addRegionButton.Enabled = false;
+            this.deleteMarkerButton.Enabled = false;
         }
 
-        private void Controllers_ControllersChanged(object? sender, EventArgs e)
+        private void Controllers_InputsChanged(object? sender, IReadOnlySet<string> newInputs)
+        {
+            if (newInputs.Count > 0)
+            {
+                if (this.NextInputDetected != null)
+                {
+                    controllers.IsMonitoredOnly = true;
+                    this.NextInputDetected?.Invoke(this, newInputs.First());
+                }
+                else
+                {
+                    var input = newInputs.First();
+                    if (this.sectionMarkDistance == null)
+                    {
+                        if (input == UserSettings.Default.SetPointControl)
+                        {
+                            this.AddPointMarker(this.currentDistance);
+                        }
+                        else if (input == UserSettings.Default.StartStopRegionControl)
+                        {
+                            this.sectionMarkDistance = this.currentDistance;
+                            this.sectionMarkTime = DateTime.Now;
+                        }
+                    }
+                    else
+                    {
+                        if (input == UserSettings.Default.StartStopRegionControl)
+                        {
+                            if (UserSettings.Default.DoubleClickForPointMarker && (DateTime.Now - this.sectionMarkTime).TotalSeconds < 1)
+                            {
+                                this.AddPointMarker(this.sectionMarkDistance ?? 0);
+                            }
+                            else
+                            {
+                                this.AddSectionMarker(this.sectionMarkDistance ?? 0, this.currentDistance);
+                            }
+                            this.sectionMarkDistance = null;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void Controllers_ControllersChanged(object? sender, IReadOnlyList<ControllerInfo> controllers)
         {
             this.gameControllersList.DataSource = null;
-            this.gameControllersList.DataSource = this.controllers.ControllerData;
+            this.gameControllersList.DataSource = controllers;
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
+            UserSettings.Default.Save();
             this.controllers.Dispose();
             if (this.trackData?.IsDirty ?? false)
             {
                 this.trackData?.Save();
             }
-            this.inputPollTimer.Stop();
             this.iRacing?.Dispose();
             this.iRacing = null;
             base.OnFormClosing(e);
@@ -50,7 +101,6 @@ namespace IRacingSpeedTrainer
 
         private void UpdateConnectionState()
         {
-            this.speedLabel.Text = "";
             switch(this.iRacing?.ConnectionState ?? TelemetryConnection.ConnectionStates.Stopped)
             {
                 case TelemetryConnection.ConnectionStates.Stopped:
@@ -121,23 +171,8 @@ namespace IRacingSpeedTrainer
 
         private void IRacing_NewTelemetryData(object? sender, Telemetry tele)
         {
-            this.currentSpeedMps = tele.Speed;
-            var speed = Math.Round(this.currentSpeedMps * 2.23694, 1);
-            float previousDistance = this.currentDistance;
             this.currentDistance = tele.LapDist;
-            this.currentDistancePct = tele.LapDistPct * 100.0f;
-            this.dataLabel.Text = String.Format("Speed: {0} @{1:0.0}({2:0.00}%)", speed, this.currentDistance, this.currentDistancePct);
-            if (previousDistance >= 0 && this.trackData != null)
-            {
-                foreach (var marker in this.trackData.Markers)
-                {
-                    if (!marker.IsRegion)
-                        if (previousDistance < marker.Start && this.currentDistance >= marker.Start)
-                        {
-                            this.AnnounceSpeed(speed, marker.Start);
-                        }
-                }
-            }
+            monitor.ProcessNewData(tele);
         }
 
         private void IRacing_CarStateChanged(object? sender, TelemetryConnection.CarStates e)
@@ -166,7 +201,7 @@ namespace IRacingSpeedTrainer
                     this.trackData.Save();
                 }
                 this.trackData = null;
-                this.addPosButton.Enabled = false;
+                this.addPositionButton.Enabled = false;
                 this.pointsListBox.DataSource = null;
             }
             if (track != null)
@@ -175,7 +210,14 @@ namespace IRacingSpeedTrainer
                 this.trackData.MarkersChanged += TrackData_MarkersChanged;
                 this.pointsListBox.DataSource = null;
                 this.trackData.Load();
-                this.addPosButton.Enabled = true;
+                this.addPositionButton.Enabled = true;
+                this.addRegionButton.Enabled = true;
+            }
+            else
+            {
+                this.addPositionButton.Enabled = false;
+                this.addRegionButton.Enabled = false;
+                this.deleteMarkerButton.Enabled = false;
             }
             this.UpdateStatusLabel();
         }
@@ -183,11 +225,11 @@ namespace IRacingSpeedTrainer
         private void TrackData_MarkersChanged(object? sender, IList<TrackMarker> markers)
         {
             this.pointsListBox.DataSource = new List<TrackMarker>(markers);
+            this.monitor.UpdateMarkers(markers);
         }
 
         private void AnnounceSpeed(double speed, float point)
         {
-            this.speedLabel.Text = String.Format("{0} MPH @ {1:0.0}", speed, point);
             int hunderds = (int)Math.Floor(speed / 100);
             double remainder = speed % 100;
             var promptBuilder = new PromptBuilder();
@@ -218,9 +260,8 @@ namespace IRacingSpeedTrainer
             }
         }
 
-        private void addPosButton_Click(object sender, EventArgs e)
+        private void AddPointMarker(float distance)
         {
-            var distance = this.currentDistance;
             if (distance >= 0)
             {
                 this.trackData?.AddMarker(new TrackMarker(distance));
@@ -228,24 +269,119 @@ namespace IRacingSpeedTrainer
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void AddSectionMarker(float startDistance, float endDistance)
         {
-            double speed = Double.Parse(textBox1.Text);
-            this.AnnounceSpeed(speed, 0);
-        }
-
-        private void InputPollTimer_Tick(object? sender, EventArgs e)
-        {
-           this.label1.Text = String.Join(" + ", controllers.GetInputs());
+            if (startDistance >= 0)
+            {
+                this.trackData?.AddMarker(new TrackMarker(startDistance, endDistance));
+                //this.pointsListBox.DataSource = this.trackData?.Markers;
+            }
         }
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            this.controllers.ScanAndAquire(this.Handle);
-            this.gameControllersList.DataSource = this.controllers.ControllerData;
-            this.inputPollTimer.Interval = 1000 / 30;
-            this.inputPollTimer.Start();
-            this.inputPollTimer.Tick += InputPollTimer_Tick;
+            UpdateControlScheme();
+            this.controllers.StartListening(this);
+            this.gameControllersList.DataSource = this.controllers.ConnectedControllers;
+            this.monitor.PointPassed += Monitor_PointPassed;
+            this.monitor.RegionPassed += Monitor_RegionPassed;
+        }
+
+        private void Monitor_RegionPassed(object? sender, TrackPositionMonitor.MultiTelemetryEventArgs e)
+        {
+            var minSpeedPoint = e.Teles.MinBy(tele => tele.Speed);
+            var maxBefore = e.Teles.Where(tele => tele.LapDist < minSpeedPoint.LapDist).MaxBy(tele => tele.Speed);
+            var maxAfter = e.Teles.Where(tele => tele.LapDist >= minSpeedPoint.LapDist).MaxBy(tele => tele.Speed); 
+
+            if (minSpeedPoint != null && maxBefore != null && maxAfter != null)
+            {
+                var minSpeed = Math.Round(minSpeedPoint.Speed * 2.23694, 1);
+                var maxBeforeSpeed = Math.Round(maxBefore.Speed * 2.23694, 1);
+                var maxAfterSpeed = Math.Round(maxAfter.Speed * 2.23694, 1);
+                this.AnnounceSpeed(maxBeforeSpeed, maxBefore.LapDist);
+                this.AnnounceSpeed(minSpeed, minSpeedPoint.LapDist);
+                this.AnnounceSpeed(maxAfterSpeed, maxAfter.LapDist);
+            }
+        }
+
+        private void Monitor_PointPassed(object? sender, TrackPositionMonitor.SingleTelemetryEventArgs e)
+        {
+            var speed = Math.Round(e.Tele.Speed * 2.23694, 1);
+            this.AnnounceSpeed(speed, e.Marker.Start);
+        }
+
+        private void pointsListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            this.deleteMarkerButton.Enabled = pointsListBox.SelectedIndex >= 0;
+        }
+
+        private void doubleClickPointSetCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            UserSettings.Default.DoubleClickForPointMarker = doubleClickPointSetCheckBox.Checked;
+            this.UpdateControlScheme();
+        }
+
+        private void UpdateControlScheme()
+        {
+            var settings = UserSettings.Default;
+            this.regionControlTextBox.Text = settings.StartStopRegionControl;
+            this.pointControlTextBox.Text = settings.SetPointControl;
+            this.doubleClickPointSetCheckBox.Checked = settings.DoubleClickForPointMarker;
+            controllers.MonitoredInputSet.Clear();
+            if (settings.StartStopRegionControl.Length > 0)
+            {
+                controllers.MonitoredInputSet.Add(settings.StartStopRegionControl);
+            }
+            if (settings.DoubleClickForPointMarker)
+            {
+                this.setPointControlLabel.Visible = false;
+                this.pointControlTextBox.Visible = false;
+                this.setPointControlButton.Visible = false;
+            }
+            else
+            {
+                this.setPointControlLabel.Visible = true;
+                this.pointControlTextBox.Visible = true;
+                this.setPointControlButton.Visible = true;
+                if (settings.SetPointControl.Length > 0)
+                {
+                    controllers.MonitoredInputSet.Add(settings.SetPointControl);
+                }
+            }
+        }
+
+        private void setRegionControlButton_Click(object sender, EventArgs e)
+        {
+            this.regionControlTextBox.Text = "<press>";
+            controllers.IsMonitoredOnly = false;
+            this.NextInputDetected += MainForm_SetRegionControlDetected;
+        }
+
+        private void MainForm_SetRegionControlDetected(object? sender, string input)
+        {
+            if (input != "Escape")
+            {
+                UserSettings.Default.StartStopRegionControl = input;
+            }
+            this.NextInputDetected = null;
+            this.UpdateControlScheme();
+        }
+
+        private void setPointControlButton_Click(object sender, EventArgs e)
+        {
+            this.pointControlTextBox.Text = "<press>";
+            controllers.IsMonitoredOnly = false;
+            this.NextInputDetected += MainForm_PointControlDetected;
+        }
+
+        private void MainForm_PointControlDetected(object? sender, string input)
+        {
+            if (input != "Escape")
+            {
+                UserSettings.Default.SetPointControl = input;
+            }
+            this.NextInputDetected = null;
+            this.UpdateControlScheme();
         }
     }
 }

@@ -34,5 +34,41 @@ namespace IRacingSpeedTrainer {
                 this["TelemetryPerSec"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string StartStopRegionControl {
+            get {
+                return ((string)(this["StartStopRegionControl"]));
+            }
+            set {
+                this["StartStopRegionControl"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool DoubleClickForPointMarker {
+            get {
+                return ((bool)(this["DoubleClickForPointMarker"]));
+            }
+            set {
+                this["DoubleClickForPointMarker"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SetPointControl {
+            get {
+                return ((string)(this["SetPointControl"]));
+            }
+            set {
+                this["SetPointControl"] = value;
+            }
+        }
     }
 }

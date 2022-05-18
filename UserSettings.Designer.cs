@@ -70,5 +70,53 @@ namespace IRacingSpeedTrainer {
                 this["SetPointControl"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("MPH")]
+        public string SpeedUnits {
+            get {
+                return ((string)(this["SpeedUnits"]));
+            }
+            set {
+                this["SpeedUnits"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SayTenths {
+            get {
+                return ((bool)(this["SayTenths"]));
+            }
+            set {
+                this["SayTenths"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Voice {
+            get {
+                return ((string)(this["Voice"]));
+            }
+            set {
+                this["Voice"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public int VoiceSpeed {
+            get {
+                return ((int)(this["VoiceSpeed"]));
+            }
+            set {
+                this["VoiceSpeed"] = value;
+            }
+        }
     }
 }

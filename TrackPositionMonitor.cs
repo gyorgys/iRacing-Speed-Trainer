@@ -66,7 +66,7 @@ namespace IRacingSpeedTrainer
                     this.currentRegionData = new List<iRacingSDK.Telemetry>();
                 }
             }
-            var marker = this.TrackMarkers.GetMarkerAt(this.lastPosition);
+            var marker = this.TrackMarkers.GetMarkerAt(previousPosition, this.lastPosition);
             if (marker == null)
             {
                 return;

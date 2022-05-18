@@ -52,6 +52,11 @@ namespace IRacingSpeedTrainer
         {
             return this.Intersects(new TrackMarker { Start = position, End = position });
         }
+        public bool Intersects(float startPosition, float endPosition)
+        {
+            return this.Intersects(new TrackMarker { Start = startPosition, End = endPosition });
+        }
+
         public bool Intersects(TrackMarker marker)
         {
             return this.Start < marker.Start ? TrackMarker.Intersects(this, marker) : TrackMarker.Intersects(marker, this);
@@ -88,17 +93,24 @@ namespace IRacingSpeedTrainer
         {
             if (this.IsRegion)
             {
+                return String.Format("{0} {1}", this.Start, this.End);
+            }
+            else
+            {
+                return String.Format("{0}", this.Start);
+            }
+        }
+
+        override public string ToString()
+        {
+            if (this.IsRegion)
+            {
                 return String.Format("{0:0.0} - {1:0.0}", this.Start, this.End);
             }
             else
             {
                 return String.Format("{0:0.0}", this.Start);
             }
-        }
-
-        override public string ToString()
-        {
-            return this.Serialize();
         }
     }
 
@@ -108,6 +120,14 @@ namespace IRacingSpeedTrainer
         {
             var marker = markers.FirstOrDefault(
                 m => m.Intersects(position),
+               TrackMarker.InvalidMarker);
+            return marker.IsInvalid ? null : marker;
+        }
+
+        public static TrackMarker? GetMarkerAt(this IEnumerable<TrackMarker> markers, float startPosition, float endPosition)
+        {
+            var marker = markers.FirstOrDefault(
+                m => m.Intersects(startPosition, endPosition ),
                TrackMarker.InvalidMarker);
             return marker.IsInvalid ? null : marker;
         }

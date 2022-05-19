@@ -45,6 +45,7 @@
             this.addRegionButton = new System.Windows.Forms.Button();
             this.labelM1 = new System.Windows.Forms.Label();
             this.controlsSettingsGroup = new System.Windows.Forms.GroupBox();
+            this.enableMarkerRecordingCheckBox = new System.Windows.Forms.CheckBox();
             this.setPointControlButton = new System.Windows.Forms.Button();
             this.pointControlSettingLabel = new System.Windows.Forms.Label();
             this.setPointControlLabel = new System.Windows.Forms.Label();
@@ -63,17 +64,19 @@
             this.voiceSelector = new System.Windows.Forms.ComboBox();
             this.voiceSpeedLabel = new System.Windows.Forms.Label();
             this.speedSelector = new System.Windows.Forms.NumericUpDown();
+            this.voiceVolumeLabel = new System.Windows.Forms.Label();
+            this.volumeSelector = new System.Windows.Forms.NumericUpDown();
             this.testAnnouncementButton = new System.Windows.Forms.Button();
             this.leftPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.rightPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.dataLabel = new System.Windows.Forms.Label();
-            this.enableMarkerRecordingCheckBox = new System.Windows.Forms.CheckBox();
             this.statusStrip.SuspendLayout();
             this.manageMarkersGroup.SuspendLayout();
             this.controlsSettingsGroup.SuspendLayout();
             this.announcementSettingsGroup.SuspendLayout();
             this.announcementSettingsLayoutPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.speedSelector)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.volumeSelector)).BeginInit();
             this.leftPanel.SuspendLayout();
             this.rightPanel.SuspendLayout();
             this.SuspendLayout();
@@ -256,6 +259,19 @@
             this.controlsSettingsGroup.TabStop = false;
             this.controlsSettingsGroup.Text = "&Controls:";
             // 
+            // enableMarkerRecordingCheckBox
+            // 
+            this.enableMarkerRecordingCheckBox.AutoSize = true;
+            this.enableMarkerRecordingCheckBox.Checked = true;
+            this.enableMarkerRecordingCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.enableMarkerRecordingCheckBox.Location = new System.Drawing.Point(15, 128);
+            this.enableMarkerRecordingCheckBox.Name = "enableMarkerRecordingCheckBox";
+            this.enableMarkerRecordingCheckBox.Size = new System.Drawing.Size(194, 24);
+            this.enableMarkerRecordingCheckBox.TabIndex = 8;
+            this.enableMarkerRecordingCheckBox.Text = "&Enable marker recording";
+            this.enableMarkerRecordingCheckBox.UseVisualStyleBackColor = true;
+            this.enableMarkerRecordingCheckBox.CheckedChanged += new System.EventHandler(this.enableMarkerRecordingCheckBox_CheckedChanged);
+            // 
             // setPointControlButton
             // 
             this.setPointControlButton.Location = new System.Drawing.Point(278, 82);
@@ -350,6 +366,8 @@
             this.announcementSettingsLayoutPanel.Controls.Add(this.voiceSelector);
             this.announcementSettingsLayoutPanel.Controls.Add(this.voiceSpeedLabel);
             this.announcementSettingsLayoutPanel.Controls.Add(this.speedSelector);
+            this.announcementSettingsLayoutPanel.Controls.Add(this.voiceVolumeLabel);
+            this.announcementSettingsLayoutPanel.Controls.Add(this.volumeSelector);
             this.announcementSettingsLayoutPanel.Controls.Add(this.testAnnouncementButton);
             this.announcementSettingsLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.announcementSettingsLayoutPanel.Location = new System.Drawing.Point(3, 36);
@@ -441,14 +459,13 @@
             this.voiceSpeedLabel.Location = new System.Drawing.Point(3, 98);
             this.voiceSpeedLabel.Name = "voiceSpeedLabel";
             this.voiceSpeedLabel.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
-            this.voiceSpeedLabel.Size = new System.Drawing.Size(52, 26);
+            this.voiceSpeedLabel.Size = new System.Drawing.Size(72, 26);
             this.voiceSpeedLabel.TabIndex = 7;
             this.voiceSpeedLabel.Text = "Speed:";
             // 
             // speedSelector
             // 
-            this.announcementSettingsLayoutPanel.SetFlowBreak(this.speedSelector, true);
-            this.speedSelector.Location = new System.Drawing.Point(61, 101);
+            this.speedSelector.Location = new System.Drawing.Point(81, 101);
             this.speedSelector.Maximum = new decimal(new int[] {
             10,
             0,
@@ -464,6 +481,29 @@
             this.speedSelector.TabIndex = 8;
             this.speedSelector.ValueChanged += new System.EventHandler(this.speedSelector_ValueChanged);
             // 
+            // voiceVolumeLabel
+            // 
+            this.voiceVolumeLabel.Location = new System.Drawing.Point(150, 98);
+            this.voiceVolumeLabel.Name = "voiceVolumeLabel";
+            this.voiceVolumeLabel.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
+            this.voiceVolumeLabel.Size = new System.Drawing.Size(67, 26);
+            this.voiceVolumeLabel.TabIndex = 7;
+            this.voiceVolumeLabel.Text = "Volume:";
+            // 
+            // volumeSelector
+            // 
+            this.announcementSettingsLayoutPanel.SetFlowBreak(this.volumeSelector, true);
+            this.volumeSelector.Location = new System.Drawing.Point(223, 101);
+            this.volumeSelector.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.volumeSelector.Name = "volumeSelector";
+            this.volumeSelector.Size = new System.Drawing.Size(63, 27);
+            this.volumeSelector.TabIndex = 9;
+            this.volumeSelector.ValueChanged += new System.EventHandler(this.volumeSelector_ValueChanged);
+            // 
             // testAnnouncementButton
             // 
             this.testAnnouncementButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -471,7 +511,7 @@
             this.testAnnouncementButton.Margin = new System.Windows.Forms.Padding(58, 16, 3, 3);
             this.testAnnouncementButton.Name = "testAnnouncementButton";
             this.testAnnouncementButton.Size = new System.Drawing.Size(103, 29);
-            this.testAnnouncementButton.TabIndex = 9;
+            this.testAnnouncementButton.TabIndex = 10;
             this.testAnnouncementButton.Text = "&Test";
             this.testAnnouncementButton.UseVisualStyleBackColor = true;
             this.testAnnouncementButton.Click += new System.EventHandler(this.testAnnouncementButton_Click);
@@ -519,19 +559,6 @@
             this.dataLabel.TabIndex = 15;
             this.dataLabel.Text = "166 MPH    1456.4 - 1689.7";
             // 
-            // enableMarkerRecordingCheckBox
-            // 
-            this.enableMarkerRecordingCheckBox.AutoSize = true;
-            this.enableMarkerRecordingCheckBox.Checked = true;
-            this.enableMarkerRecordingCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.enableMarkerRecordingCheckBox.Location = new System.Drawing.Point(15, 128);
-            this.enableMarkerRecordingCheckBox.Name = "enableMarkerRecordingCheckBox";
-            this.enableMarkerRecordingCheckBox.Size = new System.Drawing.Size(194, 24);
-            this.enableMarkerRecordingCheckBox.TabIndex = 8;
-            this.enableMarkerRecordingCheckBox.Text = "&Enable marker recording";
-            this.enableMarkerRecordingCheckBox.UseVisualStyleBackColor = true;
-            this.enableMarkerRecordingCheckBox.CheckedChanged += new System.EventHandler(this.enableMarkerRecordingCheckBox_CheckedChanged);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
@@ -556,6 +583,7 @@
             this.announcementSettingsLayoutPanel.ResumeLayout(false);
             this.announcementSettingsLayoutPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.speedSelector)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.volumeSelector)).EndInit();
             this.leftPanel.ResumeLayout(false);
             this.leftPanel.PerformLayout();
             this.rightPanel.ResumeLayout(false);
@@ -600,7 +628,9 @@
         private Label voiceLabel;
         private Label voiceSpeedLabel;
         private NumericUpDown speedSelector;
-        private FlowLayoutPanel leftPanel;
+        private FlowLayoutPanel leftPanel; 
+        private Label voiceVolumeLabel;
+        private NumericUpDown volumeSelector;
         private FlowLayoutPanel rightPanel;
         private Label dataLabel;
         private CheckBox sayMaxExitCheckBox;

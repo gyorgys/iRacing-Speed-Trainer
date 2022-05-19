@@ -37,6 +37,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="README.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="UserSettings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>UserSettings.Designer.cs</LastGenOutput>

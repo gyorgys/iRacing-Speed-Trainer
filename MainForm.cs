@@ -473,8 +473,10 @@ namespace IRacingSpeedTrainer
                 this.sayTenthsCheckBox.Checked = settings.SayTenths;
                 this.speedSelector.Value = settings.VoiceSpeed;
                 this.voiceSelector.SelectedItem = settings.Voice;
+                this.volumeSelector.Value = settings.Volume;
                 synth.SelectVoice(this.voiceSelector.SelectedItem.ToString());
                 synth.Rate = settings.VoiceSpeed;
+                synth.Volume = settings.Volume;
                 this.sayMaxExitCheckBox.Checked = settings.SayMaxExitSpeed;
                 this.sayMaxEntryCheckBox.Checked = settings.SayMaxEntrySpeed;
                 this.distanceMetric = settings.Units == 0 ? "m" : "ft";
@@ -653,6 +655,12 @@ namespace IRacingSpeedTrainer
         private void enableMarkerRecordingCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             UserSettings.Default.EnableMarkerRecording = enableMarkerRecordingCheckBox.Checked;
+        }
+
+        private void volumeSelector_ValueChanged(object sender, EventArgs e)
+        {
+            UserSettings.Default.Volume = (int)volumeSelector.Value;
+            UpdateAnnouncementSettings();
         }
     }
 }

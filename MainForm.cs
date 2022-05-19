@@ -30,6 +30,9 @@ namespace IRacingSpeedTrainer
 
         private bool updatingAnnouncementSettings = false;
         private bool updatingControlSettings = false;
+        private string distanceMetric = "m";
+        private float distanceConversion = 1f;
+        private float speedConversion = 3.6f;
 
         public MainForm()
         {
@@ -60,32 +63,35 @@ namespace IRacingSpeedTrainer
                 else
                 {
                     var input = newInputs.First();
-                    if (this.sectionMarkDistance == null)
+                    if (UserSettings.Default.EnableMarkerRecording)
                     {
-                        if (input == UserSettings.Default.SetPointControl)
+                        if (this.sectionMarkDistance == null)
                         {
-                            this.AddPointMarker(this.currentDistance);
-                        }
-                        else if (input == UserSettings.Default.StartStopRegionControl)
-                        {
-                            this.sectionMarkDistance = this.currentDistance;
-                            this.sectionMarkTime = DateTime.Now;
-                            SystemSounds.Exclamation.Play();
-                        }
-                    }
-                    else
-                    {
-                        if (input == UserSettings.Default.StartStopRegionControl)
-                        {
-                            if (UserSettings.Default.DoubleClickForPointMarker && (DateTime.Now - this.sectionMarkTime).TotalSeconds < 1)
+                            if (input == UserSettings.Default.SetPointControl)
                             {
-                                this.AddPointMarker(this.sectionMarkDistance ?? 0);
+                                this.AddPointMarker(this.currentDistance);
                             }
-                            else
+                            else if (input == UserSettings.Default.StartStopRegionControl)
                             {
-                                this.AddSectionMarker(this.sectionMarkDistance ?? 0, this.currentDistance);
+                                this.sectionMarkDistance = this.currentDistance;
+                                this.sectionMarkTime = DateTime.Now;
+                                SystemSounds.Exclamation.Play();
                             }
-                            this.sectionMarkDistance = null;
+                        }
+                        else
+                        {
+                            if (input == UserSettings.Default.StartStopRegionControl)
+                            {
+                                if (UserSettings.Default.DoubleClickForPointMarker && (DateTime.Now - this.sectionMarkTime).TotalSeconds < 1)
+                                {
+                                    this.AddPointMarker(this.sectionMarkDistance ?? 0);
+                                }
+                                else
+                                {
+                                    this.AddSectionMarker(this.sectionMarkDistance ?? 0, this.currentDistance);
+                                }
+                                this.sectionMarkDistance = null;
+                            }
                         }
                     }
                 }
@@ -184,30 +190,10 @@ namespace IRacingSpeedTrainer
                     string currentDistText = this.sectionMarkDistance != null ?
                         String.Format("{0,6:0.0} - {0,6:0.0}", this.sectionMarkDistance, this.currentDistance) :
                         String.Format("{0,6:0.0}", this.currentDistance);
-                    string speedText = String.Format("{0,5:0.0}", this.currentSpeed * this.getSpeedConversion());
-                    this.dataLabel.Text = String.Format("{0} {1}    {2}", speedText, UserSettings.Default.SpeedUnits, currentDistText);
+                    string speedText = String.Format("{0,5:0.0}", this.currentSpeed * this.speedConversion);
+                    this.dataLabel.Text = String.Format("{0} {1}    {2}", speedText, UserSettings.Default.Units, currentDistText);
                     break;
             }
-        }
-
-        private void UpdateMarkerEditControls()
-        {
-            float startDistance = 0f;
-            float endDistance = 0f;
-            float pointDistance = 0f;
-            bool validStart = Single.TryParse(this.regionStartDistanceTextBox.Text, out startDistance);
-            bool validEnd = Single.TryParse(this.regionEndDistanceTextBox.Text, out endDistance);
-            bool validPoint = Single.TryParse(this.pointDistanceTextBox.Text, out pointDistance);
-            if (validPoint)
-            {
-                validPoint = this.trackData?.Markers.GetMarkerAt(pointDistance) == null;
-            }
-            if (validStart && validEnd)
-            {
-                validStart = this.trackData?.Markers.GetMarkerAt(startDistance, endDistance) == null;
-            }
-            addPositionButton.Enabled = validPoint;
-            addRegionButton.Enabled = validStart && validEnd;
         }
 
         private void StartListening()
@@ -280,13 +266,13 @@ namespace IRacingSpeedTrainer
                 }
                 this.trackData = null;
                 this.addPositionButton.Enabled = false;
-                this.pointsListBox.DataSource = null;
+                this.markersList.DataSource = null;
             }
             if (track != null)
             {
                 this.trackData = new TrackData(track.Name);
                 this.trackData.MarkersChanged += TrackData_MarkersChanged;
-                this.pointsListBox.DataSource = null;
+                this.markersList.DataSource = null;
                 this.trackData.Load();
                 this.addPositionButton.Enabled = true;
                 this.addRegionButton.Enabled = true;
@@ -302,21 +288,15 @@ namespace IRacingSpeedTrainer
 
         private void TrackData_MarkersChanged(object? sender, IList<TrackMarker> markers)
         {
-            this.pointsListBox.DataSource = new List<TrackMarker>(markers);
+            this.markersList.DataSource = new List<TrackMarker>(markers);
             this.monitor.UpdateMarkers(markers);
-        }
-
-        private float getSpeedConversion()
-        {
-            return UserSettings.Default.SpeedUnits == "MPH" ? 2.23694f : 3.6f;
         }
 
         private void AnnounceSpeed(IList<float> speeds)
         {
             var promptBuilder = new PromptBuilder();
-            float conversion = this.getSpeedConversion();
             string format = UserSettings.Default.SayTenths ? "0.0" : "0";
-            var convertedSpeeds = speeds.Select(s => s * conversion).ToArray();
+            var convertedSpeeds = speeds.Select(s => s * this.speedConversion).ToArray();
             foreach (var convertedSpeed in convertedSpeeds)
             {
                 int hunderds = (int)Math.Floor(convertedSpeed / 100);
@@ -393,17 +373,32 @@ namespace IRacingSpeedTrainer
             this.monitor.RegionPassed += Monitor_RegionPassed;
             this.announcementTask = new Task(AnnouncementTask);
             this.announcementTask.Start();
+            this.enableMarkerRecordingCheckBox.Checked = UserSettings.Default.EnableMarkerRecording;
         }
 
         private void Monitor_RegionPassed(object? sender, TrackPositionMonitor.MultiTelemetryEventArgs e)
         {
             var minSpeedPoint = e.Teles.MinBy(tele => tele.Speed);
+            if (minSpeedPoint == null)
+            {
+                return;
+            }
             var maxBefore = e.Teles.Where(tele => tele.LapDist < minSpeedPoint.LapDist).MaxBy(tele => tele.Speed);
             var maxAfter = e.Teles.Where(tele => tele.LapDist >= minSpeedPoint.LapDist).MaxBy(tele => tele.Speed); 
 
             if (minSpeedPoint != null && maxBefore != null && maxAfter != null)
             {
-                this.AnnounceSpeed(new float[] { maxBefore.Speed, minSpeedPoint.Speed, maxAfter.Speed });
+                List<float> speeds = new List<float>();
+                if (UserSettings.Default.SayMaxEntrySpeed)
+                {
+                    speeds.Add(maxBefore.Speed);
+                }
+                speeds.Add(minSpeedPoint.Speed);
+                if (UserSettings.Default.SayMaxExitSpeed)
+                {
+                    speeds.Add(maxAfter.Speed);
+                }
+                this.AnnounceSpeed(speeds);
             }
         }
 
@@ -414,7 +409,7 @@ namespace IRacingSpeedTrainer
 
         private void pointsListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            this.deleteMarkerButton.Enabled = pointsListBox.SelectedIndex >= 0;
+            this.deleteMarkerButton.Enabled = markersList.SelectedIndex >= 0;
         }
 
         private void doubleClickPointSetCheckBox_CheckedChanged(object sender, EventArgs e)
@@ -433,8 +428,8 @@ namespace IRacingSpeedTrainer
             try 
             {
                 var settings = UserSettings.Default;
-                this.regionControlTextBox.Text = settings.StartStopRegionControl;
-                this.pointControlTextBox.Text = settings.SetPointControl;
+                this.regionControlSettingLabel.Text = settings.StartStopRegionControl;
+                this.pointControlSettingLabel.Text = settings.SetPointControl;
                 this.doubleClickPointSetCheckBox.Checked = settings.DoubleClickForPointMarker;
                 controllers.MonitoredInputSet.Clear();
                 if (settings.StartStopRegionControl.Length > 0)
@@ -444,13 +439,13 @@ namespace IRacingSpeedTrainer
                 if (settings.DoubleClickForPointMarker)
                 {
                     this.setPointControlLabel.Visible = false;
-                    this.pointControlTextBox.Visible = false;
+                    this.pointControlSettingLabel.Visible = false;
                     this.setPointControlButton.Visible = false;
                 }
                 else
                 {
                     this.setPointControlLabel.Visible = true;
-                    this.pointControlTextBox.Visible = true;
+                    this.pointControlSettingLabel.Visible = true;
                     this.setPointControlButton.Visible = true;
                     if (settings.SetPointControl.Length > 0)
                     {
@@ -474,12 +469,28 @@ namespace IRacingSpeedTrainer
             try
             {
                 var settings = UserSettings.Default;
-                this.speedUnitSelector.SelectedItem = settings.SpeedUnits;
+                this.unitsSelector.SelectedIndex = settings.Units;
                 this.sayTenthsCheckBox.Checked = settings.SayTenths;
                 this.speedSelector.Value = settings.VoiceSpeed;
                 this.voiceSelector.SelectedItem = settings.Voice;
                 synth.SelectVoice(this.voiceSelector.SelectedItem.ToString());
                 synth.Rate = settings.VoiceSpeed;
+                this.sayMaxExitCheckBox.Checked = settings.SayMaxExitSpeed;
+                this.sayMaxEntryCheckBox.Checked = settings.SayMaxEntrySpeed;
+                this.distanceMetric = settings.Units == 0 ? "m" : "ft";
+                this.distanceConversion = settings.Units == 0 ? 1f : 3.28084f;
+                this.speedConversion = UserSettings.Default.Units == 0 ? 2.23694f : 3.6f;
+                this.labelM1.Text = this.distanceMetric;
+                this.labelM2.Text = this.distanceMetric;
+                if (TrackMarker.DistanceConversion != this.distanceConversion)
+                {
+                    TrackMarker.DistanceLabel = this.distanceMetric;
+                    TrackMarker.DistanceConversion = this.distanceConversion;
+                    if (this.trackData != null)
+                    {
+                        this.markersList.DataSource = new List<TrackMarker>(this.trackData.Markers);
+                    }
+                }
             }
             finally
             {
@@ -490,7 +501,7 @@ namespace IRacingSpeedTrainer
 
         private void setRegionControlButton_Click(object sender, EventArgs e)
         {
-            this.regionControlTextBox.Text = "<press>";
+            this.regionControlSettingLabel.Text = "<press>";
             controllers.IsMonitoredOnly = false;
             this.NextInputDetected += MainForm_SetRegionControlDetected;
         }
@@ -507,7 +518,7 @@ namespace IRacingSpeedTrainer
 
         private void setPointControlButton_Click(object sender, EventArgs e)
         {
-            this.pointControlTextBox.Text = "<press>";
+            this.pointControlSettingLabel.Text = "<press>";
             controllers.IsMonitoredOnly = false;
             this.NextInputDetected += MainForm_PointControlDetected;
         }
@@ -524,27 +535,46 @@ namespace IRacingSpeedTrainer
 
         private void addRegionButton_Click(object sender, EventArgs e)
         {
+            if (this.trackData == null)
+            {
+                this.ErrorPrompt("Adding section failed", "No track loaded.");
+                return;
+            }
             float startDistance = 0f;
             float endDistance = 0f;
             if (!Single.TryParse(this.regionStartDistanceTextBox.Text, out startDistance))
             {
-                this.ErrorPrompt("Adding region failed", "Start position must be a valid floating point number.");
+                this.ErrorPrompt("Adding section failed", "Start position must be a valid floating point number.");
                 return;
             }
             if (!Single.TryParse(this.regionEndDistanceTextBox.Text, out endDistance))
             {
-                this.ErrorPrompt("Adding region failed", "End position must be a valid floating point number.");
+                this.ErrorPrompt("Adding section failed", "End position must be a valid floating point number.");
                 return;
             }
-            this.AddSectionMarker(startDistance, endDistance);
+            bool success = this.trackData.AddMarker(new TrackMarker(startDistance, endDistance));
+            if (!success)
+            {
+                this.ErrorPrompt("Adding point failed", "Position overlaps existing marker.");
+            }
+
         }
 
         private void addPositionButton_Click(object sender, EventArgs e)
         {
+            if (this.trackData == null)
+            {
+                this.ErrorPrompt("Adding point failed", "No track loaded.");
+                return;
+            }
             float distance = 0f;
             if (Single.TryParse(this.pointDistanceTextBox.Text, out distance))
             {
-                this.AddPointMarker(distance);
+                bool success = this.trackData.AddMarker(new TrackMarker(distance));
+                if (!success)
+                {
+                    this.ErrorPrompt("Adding point failed", "Position overlaps existing marker.");
+                }
             }
             else
             {
@@ -554,10 +584,10 @@ namespace IRacingSpeedTrainer
 
         private void deleteMarkerButton_Click(object sender, EventArgs e)
         {
-            var marker = pointsListBox.SelectedItem as TrackMarker;
+            var marker = markersList.SelectedItem as TrackMarker;
             if (marker != null)
             {
-                if (MessageBox.Show(this, "Are you sure you want to delete marker " + marker.ToString() + "?", "Confirm delete", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                if (MessageBox.Show(this, "Are you sure you want to delete marker " + marker.ToString() + "?", "Confirm delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     this.trackData?.DeleteMarkerAt(marker.Start);
                 }
@@ -566,12 +596,12 @@ namespace IRacingSpeedTrainer
 
         private void ErrorPrompt(string title, string message)
         {
-            MessageBox.Show(this, title, message, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show(this, message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void speedUnitSelector_SelectedIndexChanged(object sender, EventArgs e)
         {
-            UserSettings.Default.SpeedUnits = speedUnitSelector.SelectedItem.ToString();
+            UserSettings.Default.Units = unitsSelector.SelectedIndex;
             UpdateAnnouncementSettings();
         }
 
@@ -583,7 +613,17 @@ namespace IRacingSpeedTrainer
 
         private void testAnnouncementButton_Click(object sender, EventArgs e)
         {
-            this.AnnounceSpeed(new float[] { 40f, 15f, 25f });
+            List<float> speeds = new List<float>();
+            if (UserSettings.Default.SayMaxEntrySpeed)
+            {
+                speeds.Add(40f);
+            }
+            speeds.Add(15f);
+            if (UserSettings.Default.SayMaxExitSpeed)
+            {
+                speeds.Add(25f);
+            }
+            this.AnnounceSpeed(speeds);
         }
 
         private void VoiceSelector_SelectedIndexChanged(object? sender, EventArgs e)
@@ -596,6 +636,23 @@ namespace IRacingSpeedTrainer
         {
             UserSettings.Default.VoiceSpeed = (int)speedSelector.Value;
             UpdateAnnouncementSettings();
+        }
+
+        private void sayMaxEntryCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            UserSettings.Default.SayMaxEntrySpeed = sayMaxEntryCheckBox.Checked;
+            UpdateAnnouncementSettings();
+        }
+
+        private void sayMaxExitCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            UserSettings.Default.SayMaxExitSpeed = sayMaxExitCheckBox.Checked;
+            UpdateAnnouncementSettings();
+        }
+
+        private void enableMarkerRecordingCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            UserSettings.Default.EnableMarkerRecording = enableMarkerRecordingCheckBox.Checked;
         }
     }
 }

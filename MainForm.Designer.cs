@@ -31,7 +31,7 @@
             this.startStopButton = new System.Windows.Forms.Button();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.pointsListBox = new System.Windows.Forms.ListBox();
+            this.markersList = new System.Windows.Forms.ListBox();
             this.addPositionButton = new System.Windows.Forms.Button();
             this.gameControllersList = new System.Windows.Forms.ListBox();
             this.controllersLabel = new System.Windows.Forms.Label();
@@ -46,28 +46,33 @@
             this.labelM1 = new System.Windows.Forms.Label();
             this.controlsSettingsGroup = new System.Windows.Forms.GroupBox();
             this.setPointControlButton = new System.Windows.Forms.Button();
-            this.pointControlTextBox = new System.Windows.Forms.TextBox();
+            this.pointControlSettingLabel = new System.Windows.Forms.Label();
             this.setPointControlLabel = new System.Windows.Forms.Label();
             this.doubleClickPointSetCheckBox = new System.Windows.Forms.CheckBox();
             this.setRegionControlButton = new System.Windows.Forms.Button();
-            this.regionControlTextBox = new System.Windows.Forms.TextBox();
-            this.regionControlLabel = new System.Windows.Forms.Label();
+            this.regionControlSettingLabel = new System.Windows.Forms.Label();
+            this.setRegionControlLabel = new System.Windows.Forms.Label();
             this.announcementSettingsGroup = new System.Windows.Forms.GroupBox();
-            this.voiceSpeedLabel = new System.Windows.Forms.Label();
-            this.speedSelector = new System.Windows.Forms.NumericUpDown();
+            this.announcementSettingsLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
+            this.unitsLabel = new System.Windows.Forms.Label();
+            this.unitsSelector = new System.Windows.Forms.ComboBox();
+            this.sayTenthsCheckBox = new System.Windows.Forms.CheckBox();
+            this.sayMaxExitCheckBox = new System.Windows.Forms.CheckBox();
+            this.sayMaxEntryCheckBox = new System.Windows.Forms.CheckBox();
             this.voiceLabel = new System.Windows.Forms.Label();
             this.voiceSelector = new System.Windows.Forms.ComboBox();
+            this.voiceSpeedLabel = new System.Windows.Forms.Label();
+            this.speedSelector = new System.Windows.Forms.NumericUpDown();
             this.testAnnouncementButton = new System.Windows.Forms.Button();
-            this.speedUnitsLabel = new System.Windows.Forms.Label();
-            this.speedUnitSelector = new System.Windows.Forms.ComboBox();
-            this.sayTenthsCheckBox = new System.Windows.Forms.CheckBox();
             this.leftPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.rightPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.dataLabel = new System.Windows.Forms.Label();
+            this.enableMarkerRecordingCheckBox = new System.Windows.Forms.CheckBox();
             this.statusStrip.SuspendLayout();
             this.manageMarkersGroup.SuspendLayout();
             this.controlsSettingsGroup.SuspendLayout();
             this.announcementSettingsGroup.SuspendLayout();
+            this.announcementSettingsLayoutPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.speedSelector)).BeginInit();
             this.leftPanel.SuspendLayout();
             this.rightPanel.SuspendLayout();
@@ -81,7 +86,7 @@
             this.startStopButton.Name = "startStopButton";
             this.startStopButton.Size = new System.Drawing.Size(194, 47);
             this.startStopButton.TabIndex = 0;
-            this.startStopButton.Text = "Start";
+            this.startStopButton.Text = "&Start";
             this.startStopButton.UseVisualStyleBackColor = true;
             this.startStopButton.Click += new System.EventHandler(this.startStopButton_Click);
             // 
@@ -104,16 +109,16 @@
             this.toolStripStatusLabel.Text = "toolStripStatusLabel";
             this.toolStripStatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // pointsListBox
+            // markersList
             // 
-            this.pointsListBox.FormattingEnabled = true;
-            this.pointsListBox.ItemHeight = 20;
-            this.pointsListBox.Location = new System.Drawing.Point(2, 101);
-            this.pointsListBox.Margin = new System.Windows.Forms.Padding(2);
-            this.pointsListBox.Name = "pointsListBox";
-            this.pointsListBox.Size = new System.Drawing.Size(390, 404);
-            this.pointsListBox.TabIndex = 2;
-            this.pointsListBox.SelectedIndexChanged += new System.EventHandler(this.pointsListBox_SelectedIndexChanged);
+            this.markersList.FormattingEnabled = true;
+            this.markersList.ItemHeight = 20;
+            this.markersList.Location = new System.Drawing.Point(2, 101);
+            this.markersList.Margin = new System.Windows.Forms.Padding(2);
+            this.markersList.Name = "markersList";
+            this.markersList.Size = new System.Drawing.Size(390, 404);
+            this.markersList.TabIndex = 2;
+            this.markersList.SelectedIndexChanged += new System.EventHandler(this.pointsListBox_SelectedIndexChanged);
             // 
             // addPositionButton
             // 
@@ -130,19 +135,20 @@
             // 
             this.gameControllersList.FormattingEnabled = true;
             this.gameControllersList.ItemHeight = 20;
-            this.gameControllersList.Location = new System.Drawing.Point(11, 327);
+            this.gameControllersList.Location = new System.Drawing.Point(11, 339);
             this.gameControllersList.Name = "gameControllersList";
-            this.gameControllersList.Size = new System.Drawing.Size(355, 164);
-            this.gameControllersList.TabIndex = 8;
+            this.gameControllersList.SelectionMode = System.Windows.Forms.SelectionMode.None;
+            this.gameControllersList.Size = new System.Drawing.Size(355, 124);
+            this.gameControllersList.TabIndex = 3;
             // 
             // controllersLabel
             // 
             this.controllersLabel.AutoSize = true;
-            this.controllersLabel.Location = new System.Drawing.Point(11, 304);
+            this.controllersLabel.Location = new System.Drawing.Point(11, 316);
             this.controllersLabel.Margin = new System.Windows.Forms.Padding(3, 16, 3, 0);
             this.controllersLabel.Name = "controllersLabel";
             this.controllersLabel.Size = new System.Drawing.Size(157, 20);
-            this.controllersLabel.TabIndex = 11;
+            this.controllersLabel.TabIndex = 2;
             this.controllersLabel.Text = "Connected controllers:";
             // 
             // trackMarkersLabel
@@ -235,37 +241,39 @@
             // 
             // controlsSettingsGroup
             // 
+            this.controlsSettingsGroup.Controls.Add(this.enableMarkerRecordingCheckBox);
             this.controlsSettingsGroup.Controls.Add(this.setPointControlButton);
-            this.controlsSettingsGroup.Controls.Add(this.pointControlTextBox);
+            this.controlsSettingsGroup.Controls.Add(this.pointControlSettingLabel);
             this.controlsSettingsGroup.Controls.Add(this.setPointControlLabel);
             this.controlsSettingsGroup.Controls.Add(this.doubleClickPointSetCheckBox);
             this.controlsSettingsGroup.Controls.Add(this.setRegionControlButton);
-            this.controlsSettingsGroup.Controls.Add(this.regionControlTextBox);
-            this.controlsSettingsGroup.Controls.Add(this.regionControlLabel);
-            this.controlsSettingsGroup.Location = new System.Drawing.Point(11, 497);
+            this.controlsSettingsGroup.Controls.Add(this.regionControlSettingLabel);
+            this.controlsSettingsGroup.Controls.Add(this.setRegionControlLabel);
+            this.controlsSettingsGroup.Location = new System.Drawing.Point(11, 469);
             this.controlsSettingsGroup.Name = "controlsSettingsGroup";
-            this.controlsSettingsGroup.Size = new System.Drawing.Size(355, 127);
-            this.controlsSettingsGroup.TabIndex = 15;
+            this.controlsSettingsGroup.Size = new System.Drawing.Size(355, 158);
+            this.controlsSettingsGroup.TabIndex = 4;
             this.controlsSettingsGroup.TabStop = false;
-            this.controlsSettingsGroup.Text = "Controls:";
+            this.controlsSettingsGroup.Text = "&Controls:";
             // 
             // setPointControlButton
             // 
-            this.setPointControlButton.Location = new System.Drawing.Point(278, 84);
+            this.setPointControlButton.Location = new System.Drawing.Point(278, 82);
             this.setPointControlButton.Name = "setPointControlButton";
             this.setPointControlButton.Size = new System.Drawing.Size(71, 31);
-            this.setPointControlButton.TabIndex = 6;
+            this.setPointControlButton.TabIndex = 7;
             this.setPointControlButton.Text = "Change";
             this.setPointControlButton.UseVisualStyleBackColor = true;
             this.setPointControlButton.Click += new System.EventHandler(this.setPointControlButton_Click);
             // 
-            // pointControlTextBox
+            // pointControlSettingLabel
             // 
-            this.pointControlTextBox.Location = new System.Drawing.Point(140, 84);
-            this.pointControlTextBox.Name = "pointControlTextBox";
-            this.pointControlTextBox.ReadOnly = true;
-            this.pointControlTextBox.Size = new System.Drawing.Size(132, 27);
-            this.pointControlTextBox.TabIndex = 5;
+            this.pointControlSettingLabel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pointControlSettingLabel.Location = new System.Drawing.Point(140, 84);
+            this.pointControlSettingLabel.Name = "pointControlSettingLabel";
+            this.pointControlSettingLabel.Size = new System.Drawing.Size(132, 27);
+            this.pointControlSettingLabel.TabIndex = 5;
+            this.pointControlSettingLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // setPointControlLabel
             // 
@@ -284,69 +292,163 @@
             this.doubleClickPointSetCheckBox.Location = new System.Drawing.Point(15, 58);
             this.doubleClickPointSetCheckBox.Name = "doubleClickPointSetCheckBox";
             this.doubleClickPointSetCheckBox.Size = new System.Drawing.Size(320, 24);
-            this.doubleClickPointSetCheckBox.TabIndex = 3;
+            this.doubleClickPointSetCheckBox.TabIndex = 6;
             this.doubleClickPointSetCheckBox.Text = "Double click region button for point marker";
             this.doubleClickPointSetCheckBox.UseVisualStyleBackColor = true;
             this.doubleClickPointSetCheckBox.CheckedChanged += new System.EventHandler(this.doubleClickPointSetCheckBox_CheckedChanged);
             // 
             // setRegionControlButton
             // 
-            this.setRegionControlButton.Location = new System.Drawing.Point(278, 21);
+            this.setRegionControlButton.Location = new System.Drawing.Point(278, 19);
             this.setRegionControlButton.Name = "setRegionControlButton";
             this.setRegionControlButton.Size = new System.Drawing.Size(71, 31);
-            this.setRegionControlButton.TabIndex = 2;
+            this.setRegionControlButton.TabIndex = 5;
             this.setRegionControlButton.Text = "Change";
             this.setRegionControlButton.UseVisualStyleBackColor = true;
             this.setRegionControlButton.Click += new System.EventHandler(this.setRegionControlButton_Click);
             // 
-            // regionControlTextBox
+            // regionControlSettingLabel
             // 
-            this.regionControlTextBox.Location = new System.Drawing.Point(140, 21);
-            this.regionControlTextBox.Name = "regionControlTextBox";
-            this.regionControlTextBox.ReadOnly = true;
-            this.regionControlTextBox.Size = new System.Drawing.Size(132, 27);
-            this.regionControlTextBox.TabIndex = 1;
+            this.regionControlSettingLabel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.regionControlSettingLabel.Location = new System.Drawing.Point(140, 21);
+            this.regionControlSettingLabel.Name = "regionControlSettingLabel";
+            this.regionControlSettingLabel.Size = new System.Drawing.Size(132, 27);
+            this.regionControlSettingLabel.TabIndex = 1;
+            this.regionControlSettingLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // regionControlLabel
+            // setRegionControlLabel
             // 
-            this.regionControlLabel.AutoSize = true;
-            this.regionControlLabel.Location = new System.Drawing.Point(6, 23);
-            this.regionControlLabel.Name = "regionControlLabel";
-            this.regionControlLabel.Size = new System.Drawing.Size(129, 20);
-            this.regionControlLabel.TabIndex = 0;
-            this.regionControlLabel.Text = "Start / end region:";
+            this.setRegionControlLabel.AutoSize = true;
+            this.setRegionControlLabel.Location = new System.Drawing.Point(6, 23);
+            this.setRegionControlLabel.Name = "setRegionControlLabel";
+            this.setRegionControlLabel.Size = new System.Drawing.Size(129, 20);
+            this.setRegionControlLabel.TabIndex = 0;
+            this.setRegionControlLabel.Text = "Start / end region:";
             // 
             // announcementSettingsGroup
             // 
-            this.announcementSettingsGroup.Controls.Add(this.voiceSpeedLabel);
-            this.announcementSettingsGroup.Controls.Add(this.speedSelector);
-            this.announcementSettingsGroup.Controls.Add(this.voiceLabel);
-            this.announcementSettingsGroup.Controls.Add(this.voiceSelector);
-            this.announcementSettingsGroup.Controls.Add(this.testAnnouncementButton);
-            this.announcementSettingsGroup.Controls.Add(this.speedUnitsLabel);
-            this.announcementSettingsGroup.Controls.Add(this.speedUnitSelector);
-            this.announcementSettingsGroup.Controls.Add(this.sayTenthsCheckBox);
+            this.announcementSettingsGroup.AutoSize = true;
+            this.announcementSettingsGroup.Controls.Add(this.announcementSettingsLayoutPanel);
             this.announcementSettingsGroup.Location = new System.Drawing.Point(11, 79);
             this.announcementSettingsGroup.Margin = new System.Windows.Forms.Padding(3, 16, 3, 3);
             this.announcementSettingsGroup.Name = "announcementSettingsGroup";
             this.announcementSettingsGroup.Padding = new System.Windows.Forms.Padding(3, 16, 3, 3);
-            this.announcementSettingsGroup.Size = new System.Drawing.Size(355, 206);
-            this.announcementSettingsGroup.TabIndex = 16;
+            this.announcementSettingsGroup.Size = new System.Drawing.Size(302, 218);
+            this.announcementSettingsGroup.TabIndex = 1;
             this.announcementSettingsGroup.TabStop = false;
-            this.announcementSettingsGroup.Text = "Announcement settings";
+            this.announcementSettingsGroup.Text = "&Announcement settings";
+            // 
+            // announcementSettingsLayoutPanel
+            // 
+            this.announcementSettingsLayoutPanel.AutoSize = true;
+            this.announcementSettingsLayoutPanel.Controls.Add(this.unitsLabel);
+            this.announcementSettingsLayoutPanel.Controls.Add(this.unitsSelector);
+            this.announcementSettingsLayoutPanel.Controls.Add(this.sayTenthsCheckBox);
+            this.announcementSettingsLayoutPanel.Controls.Add(this.sayMaxExitCheckBox);
+            this.announcementSettingsLayoutPanel.Controls.Add(this.sayMaxEntryCheckBox);
+            this.announcementSettingsLayoutPanel.Controls.Add(this.voiceLabel);
+            this.announcementSettingsLayoutPanel.Controls.Add(this.voiceSelector);
+            this.announcementSettingsLayoutPanel.Controls.Add(this.voiceSpeedLabel);
+            this.announcementSettingsLayoutPanel.Controls.Add(this.speedSelector);
+            this.announcementSettingsLayoutPanel.Controls.Add(this.testAnnouncementButton);
+            this.announcementSettingsLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.announcementSettingsLayoutPanel.Location = new System.Drawing.Point(3, 36);
+            this.announcementSettingsLayoutPanel.Name = "announcementSettingsLayoutPanel";
+            this.announcementSettingsLayoutPanel.Size = new System.Drawing.Size(296, 179);
+            this.announcementSettingsLayoutPanel.TabIndex = 10;
+            // 
+            // unitsLabel
+            // 
+            this.unitsLabel.Location = new System.Drawing.Point(3, 0);
+            this.unitsLabel.Name = "unitsLabel";
+            this.unitsLabel.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
+            this.unitsLabel.Size = new System.Drawing.Size(52, 26);
+            this.unitsLabel.TabIndex = 0;
+            this.unitsLabel.Text = "Units:";
+            this.unitsLabel.UseMnemonic = false;
+            // 
+            // unitsSelector
+            // 
+            this.unitsSelector.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.unitsSelector.FormattingEnabled = true;
+            this.unitsSelector.Items.AddRange(new object[] {
+            "Metric",
+            "Imperial"});
+            this.unitsSelector.Location = new System.Drawing.Point(61, 3);
+            this.unitsSelector.Name = "unitsSelector";
+            this.unitsSelector.Size = new System.Drawing.Size(93, 28);
+            this.unitsSelector.TabIndex = 1;
+            this.unitsSelector.SelectedIndexChanged += new System.EventHandler(this.speedUnitSelector_SelectedIndexChanged);
+            // 
+            // sayTenthsCheckBox
+            // 
+            this.sayTenthsCheckBox.AutoSize = true;
+            this.announcementSettingsLayoutPanel.SetFlowBreak(this.sayTenthsCheckBox, true);
+            this.sayTenthsCheckBox.Location = new System.Drawing.Point(160, 3);
+            this.sayTenthsCheckBox.Name = "sayTenthsCheckBox";
+            this.sayTenthsCheckBox.Padding = new System.Windows.Forms.Padding(16, 4, 0, 0);
+            this.sayTenthsCheckBox.Size = new System.Drawing.Size(114, 28);
+            this.sayTenthsCheckBox.TabIndex = 2;
+            this.sayTenthsCheckBox.Text = "Say tenths";
+            this.sayTenthsCheckBox.UseVisualStyleBackColor = true;
+            this.sayTenthsCheckBox.CheckedChanged += new System.EventHandler(this.sayTenthsCheckBox_CheckedChanged);
+            // 
+            // sayMaxExitCheckBox
+            // 
+            this.sayMaxExitCheckBox.AutoSize = true;
+            this.sayMaxExitCheckBox.Location = new System.Drawing.Point(3, 37);
+            this.sayMaxExitCheckBox.Name = "sayMaxExitCheckBox";
+            this.sayMaxExitCheckBox.Padding = new System.Windows.Forms.Padding(24, 0, 0, 0);
+            this.sayMaxExitCheckBox.Size = new System.Drawing.Size(138, 24);
+            this.sayMaxExitCheckBox.TabIndex = 3;
+            this.sayMaxExitCheckBox.Text = "Say max exit";
+            this.sayMaxExitCheckBox.UseVisualStyleBackColor = true;
+            this.sayMaxExitCheckBox.CheckedChanged += new System.EventHandler(this.sayMaxExitCheckBox_CheckedChanged);
+            // 
+            // sayMaxEntryCheckBox
+            // 
+            this.sayMaxEntryCheckBox.AutoSize = true;
+            this.announcementSettingsLayoutPanel.SetFlowBreak(this.sayMaxEntryCheckBox, true);
+            this.sayMaxEntryCheckBox.Location = new System.Drawing.Point(147, 37);
+            this.sayMaxEntryCheckBox.Name = "sayMaxEntryCheckBox";
+            this.sayMaxEntryCheckBox.Size = new System.Drawing.Size(123, 24);
+            this.sayMaxEntryCheckBox.TabIndex = 4;
+            this.sayMaxEntryCheckBox.Text = "Say max entry";
+            this.sayMaxEntryCheckBox.UseVisualStyleBackColor = true;
+            this.sayMaxEntryCheckBox.CheckedChanged += new System.EventHandler(this.sayMaxEntryCheckBox_CheckedChanged);
+            // 
+            // voiceLabel
+            // 
+            this.voiceLabel.Location = new System.Drawing.Point(3, 64);
+            this.voiceLabel.Name = "voiceLabel";
+            this.voiceLabel.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
+            this.voiceLabel.Size = new System.Drawing.Size(52, 26);
+            this.voiceLabel.TabIndex = 5;
+            this.voiceLabel.Text = "Voice:";
+            // 
+            // voiceSelector
+            // 
+            this.voiceSelector.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.announcementSettingsLayoutPanel.SetFlowBreak(this.voiceSelector, true);
+            this.voiceSelector.FormattingEnabled = true;
+            this.voiceSelector.Location = new System.Drawing.Point(61, 67);
+            this.voiceSelector.Name = "voiceSelector";
+            this.voiceSelector.Size = new System.Drawing.Size(232, 28);
+            this.voiceSelector.TabIndex = 6;
             // 
             // voiceSpeedLabel
             // 
-            this.voiceSpeedLabel.AutoSize = true;
-            this.voiceSpeedLabel.Location = new System.Drawing.Point(10, 117);
+            this.voiceSpeedLabel.Location = new System.Drawing.Point(3, 98);
             this.voiceSpeedLabel.Name = "voiceSpeedLabel";
-            this.voiceSpeedLabel.Size = new System.Drawing.Size(54, 20);
+            this.voiceSpeedLabel.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
+            this.voiceSpeedLabel.Size = new System.Drawing.Size(52, 26);
             this.voiceSpeedLabel.TabIndex = 7;
             this.voiceSpeedLabel.Text = "Speed:";
             // 
             // speedSelector
             // 
-            this.speedSelector.Location = new System.Drawing.Point(109, 102);
+            this.announcementSettingsLayoutPanel.SetFlowBreak(this.speedSelector, true);
+            this.speedSelector.Location = new System.Drawing.Point(61, 101);
             this.speedSelector.Maximum = new decimal(new int[] {
             10,
             0,
@@ -359,69 +461,20 @@
             -2147483648});
             this.speedSelector.Name = "speedSelector";
             this.speedSelector.Size = new System.Drawing.Size(63, 27);
-            this.speedSelector.TabIndex = 6;
+            this.speedSelector.TabIndex = 8;
             this.speedSelector.ValueChanged += new System.EventHandler(this.speedSelector_ValueChanged);
-            // 
-            // voiceLabel
-            // 
-            this.voiceLabel.AutoSize = true;
-            this.voiceLabel.Location = new System.Drawing.Point(10, 78);
-            this.voiceLabel.Name = "voiceLabel";
-            this.voiceLabel.Size = new System.Drawing.Size(48, 20);
-            this.voiceLabel.TabIndex = 5;
-            this.voiceLabel.Text = "Voice:";
-            // 
-            // voiceSelector
-            // 
-            this.voiceSelector.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.voiceSelector.FormattingEnabled = true;
-            this.voiceSelector.Location = new System.Drawing.Point(105, 62);
-            this.voiceSelector.Name = "voiceSelector";
-            this.voiceSelector.Size = new System.Drawing.Size(232, 28);
-            this.voiceSelector.TabIndex = 4;
             // 
             // testAnnouncementButton
             // 
-            this.testAnnouncementButton.Location = new System.Drawing.Point(105, 171);
+            this.testAnnouncementButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.testAnnouncementButton.Location = new System.Drawing.Point(58, 147);
+            this.testAnnouncementButton.Margin = new System.Windows.Forms.Padding(58, 16, 3, 3);
             this.testAnnouncementButton.Name = "testAnnouncementButton";
             this.testAnnouncementButton.Size = new System.Drawing.Size(103, 29);
-            this.testAnnouncementButton.TabIndex = 3;
-            this.testAnnouncementButton.Text = "Test";
+            this.testAnnouncementButton.TabIndex = 9;
+            this.testAnnouncementButton.Text = "&Test";
             this.testAnnouncementButton.UseVisualStyleBackColor = true;
             this.testAnnouncementButton.Click += new System.EventHandler(this.testAnnouncementButton_Click);
-            // 
-            // speedUnitsLabel
-            // 
-            this.speedUnitsLabel.AutoSize = true;
-            this.speedUnitsLabel.Location = new System.Drawing.Point(10, 39);
-            this.speedUnitsLabel.Name = "speedUnitsLabel";
-            this.speedUnitsLabel.Size = new System.Drawing.Size(89, 20);
-            this.speedUnitsLabel.TabIndex = 2;
-            this.speedUnitsLabel.Text = "Speed units:";
-            // 
-            // speedUnitSelector
-            // 
-            this.speedUnitSelector.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.speedUnitSelector.FormattingEnabled = true;
-            this.speedUnitSelector.Items.AddRange(new object[] {
-            "km/h",
-            "MPH"});
-            this.speedUnitSelector.Location = new System.Drawing.Point(105, 24);
-            this.speedUnitSelector.Name = "speedUnitSelector";
-            this.speedUnitSelector.Size = new System.Drawing.Size(93, 28);
-            this.speedUnitSelector.TabIndex = 1;
-            this.speedUnitSelector.SelectedIndexChanged += new System.EventHandler(this.speedUnitSelector_SelectedIndexChanged);
-            // 
-            // sayTenthsCheckBox
-            // 
-            this.sayTenthsCheckBox.AutoSize = true;
-            this.sayTenthsCheckBox.Location = new System.Drawing.Point(204, 39);
-            this.sayTenthsCheckBox.Name = "sayTenthsCheckBox";
-            this.sayTenthsCheckBox.Size = new System.Drawing.Size(98, 24);
-            this.sayTenthsCheckBox.TabIndex = 0;
-            this.sayTenthsCheckBox.Text = "Say tenths";
-            this.sayTenthsCheckBox.UseVisualStyleBackColor = true;
-            this.sayTenthsCheckBox.CheckedChanged += new System.EventHandler(this.sayTenthsCheckBox_CheckedChanged);
             // 
             // leftPanel
             // 
@@ -442,7 +495,7 @@
             // 
             this.rightPanel.Controls.Add(this.dataLabel);
             this.rightPanel.Controls.Add(this.trackMarkersLabel);
-            this.rightPanel.Controls.Add(this.pointsListBox);
+            this.rightPanel.Controls.Add(this.markersList);
             this.rightPanel.Controls.Add(this.manageMarkersGroup);
             this.rightPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.rightPanel.Location = new System.Drawing.Point(381, -1);
@@ -466,6 +519,19 @@
             this.dataLabel.TabIndex = 15;
             this.dataLabel.Text = "166 MPH    1456.4 - 1689.7";
             // 
+            // enableMarkerRecordingCheckBox
+            // 
+            this.enableMarkerRecordingCheckBox.AutoSize = true;
+            this.enableMarkerRecordingCheckBox.Checked = true;
+            this.enableMarkerRecordingCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.enableMarkerRecordingCheckBox.Location = new System.Drawing.Point(15, 128);
+            this.enableMarkerRecordingCheckBox.Name = "enableMarkerRecordingCheckBox";
+            this.enableMarkerRecordingCheckBox.Size = new System.Drawing.Size(194, 24);
+            this.enableMarkerRecordingCheckBox.TabIndex = 8;
+            this.enableMarkerRecordingCheckBox.Text = "&Enable marker recording";
+            this.enableMarkerRecordingCheckBox.UseVisualStyleBackColor = true;
+            this.enableMarkerRecordingCheckBox.CheckedChanged += new System.EventHandler(this.enableMarkerRecordingCheckBox_CheckedChanged);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
@@ -487,6 +553,8 @@
             this.controlsSettingsGroup.PerformLayout();
             this.announcementSettingsGroup.ResumeLayout(false);
             this.announcementSettingsGroup.PerformLayout();
+            this.announcementSettingsLayoutPanel.ResumeLayout(false);
+            this.announcementSettingsLayoutPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.speedSelector)).EndInit();
             this.leftPanel.ResumeLayout(false);
             this.leftPanel.PerformLayout();
@@ -502,7 +570,7 @@
         private Button startStopButton;
         private StatusStrip statusStrip;
         private ToolStripStatusLabel toolStripStatusLabel;
-        private ListBox pointsListBox;
+        private ListBox markersList;
         private Button addPositionButton;
         private ListBox gameControllersList;
         private Label controllersLabel;
@@ -517,16 +585,16 @@
         private Label labelM1;
         private GroupBox controlsSettingsGroup;
         private Button setPointControlButton;
-        private TextBox pointControlTextBox;
+        private Label pointControlSettingLabel;
         private Label setPointControlLabel;
         private CheckBox doubleClickPointSetCheckBox;
         private Button setRegionControlButton;
-        private TextBox regionControlTextBox;
-        private Label regionControlLabel;
+        private Label regionControlSettingLabel;
+        private Label setRegionControlLabel;
         private GroupBox announcementSettingsGroup;
         private Button testAnnouncementButton;
-        private Label speedUnitsLabel;
-        private ComboBox speedUnitSelector;
+        private Label unitsLabel;
+        private ComboBox unitsSelector;
         private CheckBox sayTenthsCheckBox;
         private ComboBox voiceSelector;
         private Label voiceLabel;
@@ -535,5 +603,9 @@
         private FlowLayoutPanel leftPanel;
         private FlowLayoutPanel rightPanel;
         private Label dataLabel;
+        private CheckBox sayMaxExitCheckBox;
+        private CheckBox sayMaxEntryCheckBox;
+        private FlowLayoutPanel announcementSettingsLayoutPanel;
+        private CheckBox enableMarkerRecordingCheckBox;
     }
 }

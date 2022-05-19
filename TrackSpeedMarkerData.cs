@@ -11,6 +11,10 @@ namespace IRacingSpeedTrainer
     internal class TrackMarker
     {
         const float MAX_TRACK_POS = 1000000.0f;
+
+        public static float DistanceConversion { get; set; } = 1f;
+        public static string DistanceLabel { get; set; } = "m";
+
         public float Start { get; private set; } = -1;
         public float End { get; private set; } = -1;
 
@@ -105,11 +109,15 @@ namespace IRacingSpeedTrainer
         {
             if (this.IsRegion)
             {
-                return String.Format("{0:0.0} - {1:0.0}", this.Start, this.End);
+                return String.Format(
+                    "{0:0.0} {2} - {1:0.0} {2}", 
+                    this.Start * DistanceConversion, 
+                    this.End * DistanceConversion, 
+                    DistanceLabel);
             }
             else
             {
-                return String.Format("{0:0.0}", this.Start);
+                return String.Format("{0:0.0} {1}", this.Start * DistanceConversion, DistanceLabel);
             }
         }
     }

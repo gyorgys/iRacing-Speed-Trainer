@@ -14,8 +14,8 @@
     <Setting Name="SetPointControl" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="SpeedUnits" Type="System.String" Scope="User">
-      <Value Profile="(Default)">MPH</Value>
+    <Setting Name="Units" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="SayTenths" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
@@ -25,6 +25,15 @@
     </Setting>
     <Setting Name="VoiceSpeed" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="SayMaxEntrySpeed" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="SayMaxExitSpeed" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="EnableMarkerRecording" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>
 </SettingsFile>

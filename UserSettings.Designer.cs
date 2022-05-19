@@ -73,13 +73,13 @@ namespace IRacingSpeedTrainer {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("MPH")]
-        public string SpeedUnits {
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int Units {
             get {
-                return ((string)(this["SpeedUnits"]));
+                return ((int)(this["Units"]));
             }
             set {
-                this["SpeedUnits"] = value;
+                this["Units"] = value;
             }
         }
         
@@ -116,6 +116,42 @@ namespace IRacingSpeedTrainer {
             }
             set {
                 this["VoiceSpeed"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool SayMaxEntrySpeed {
+            get {
+                return ((bool)(this["SayMaxEntrySpeed"]));
+            }
+            set {
+                this["SayMaxEntrySpeed"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool SayMaxExitSpeed {
+            get {
+                return ((bool)(this["SayMaxExitSpeed"]));
+            }
+            set {
+                this["SayMaxExitSpeed"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool EnableMarkerRecording {
+            get {
+                return ((bool)(this["EnableMarkerRecording"]));
+            }
+            set {
+                this["EnableMarkerRecording"] = value;
             }
         }
     }

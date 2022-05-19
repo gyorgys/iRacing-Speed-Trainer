@@ -476,7 +476,7 @@ namespace IRacingSpeedTrainer
                 this.volumeSelector.Value = settings.Volume;
                 synth.SelectVoice(this.voiceSelector.SelectedItem.ToString());
                 synth.Rate = settings.VoiceSpeed;
-                synth.Volume = settings.Volume;
+                synth.Volume = settings.Volume * 10;
                 this.sayMaxExitCheckBox.Checked = settings.SayMaxExitSpeed;
                 this.sayMaxEntryCheckBox.Checked = settings.SayMaxEntrySpeed;
                 this.distanceMetric = settings.Units == 0 ? "m" : "ft";

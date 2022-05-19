@@ -188,8 +188,8 @@ namespace IRacingSpeedTrainer
                     break;
                 case TelemetryConnection.CarStates.OnTrack:
                     string currentDistText = this.sectionMarkDistance != null ?
-                        String.Format("{0,6:0.0} - {0,6:0.0}", this.sectionMarkDistance, this.currentDistance) :
-                        String.Format("{0,6:0.0}", this.currentDistance);
+                        String.Format("{0,7:0.0} - {0,7:0.0}", this.sectionMarkDistance * this.distanceConversion, this.currentDistance * this.distanceConversion) :
+                        String.Format("{0,7:0.0}", this.currentDistance * this.distanceConversion);
                     string speedText = String.Format("{0,5:0.0}", this.currentSpeed * this.speedConversion);
                     this.dataLabel.Text = String.Format("{0} {1}    {2}", speedText, UserSettings.Default.Units, currentDistText);
                     break;

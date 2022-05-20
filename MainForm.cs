@@ -500,7 +500,7 @@ namespace IRacingSpeedTrainer
                 this.distanceMetric = settings.Units == 0 ? "m" : "ft";
                 this.speedMetric = settings.Units == 0 ? "km/h" : "mph";
                 this.distanceConversion = settings.Units == 0 ? 1f : 3.28084f;
-                this.speedConversion = UserSettings.Default.Units == 0 ? 2.23694f : 3.6f;
+                this.speedConversion = UserSettings.Default.Units == 0 ? 3.6f : 2.23694f;
                 this.labelM1.Text = this.distanceMetric;
                 this.labelM2.Text = this.distanceMetric;
                 if (TrackMarker.DistanceConversion != this.distanceConversion)

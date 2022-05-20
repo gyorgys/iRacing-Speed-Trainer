@@ -31,6 +31,7 @@ namespace IRacingSpeedTrainer
         private bool updatingAnnouncementSettings = false;
         private bool updatingControlSettings = false;
         private string distanceMetric = "m";
+        private string speedMetric = "km/h";
         private float distanceConversion = 1f;
         private float speedConversion = 3.6f;
 
@@ -188,10 +189,10 @@ namespace IRacingSpeedTrainer
                     break;
                 case TelemetryConnection.CarStates.OnTrack:
                     string currentDistText = this.sectionMarkDistance != null ?
-                        String.Format("{0,7:0.0} - {0,7:0.0}", this.sectionMarkDistance * this.distanceConversion, this.currentDistance * this.distanceConversion) :
+                        String.Format("{0,7:0.0} - {1,7:0.0}", this.sectionMarkDistance * this.distanceConversion, this.currentDistance * this.distanceConversion) :
                         String.Format("{0,7:0.0}", this.currentDistance * this.distanceConversion);
                     string speedText = String.Format("{0,5:0.0}", this.currentSpeed * this.speedConversion);
-                    this.dataLabel.Text = String.Format("{0} {1}    {2}", speedText, UserSettings.Default.Units, currentDistText);
+                    this.dataLabel.Text = String.Format("{0} {1}  {2}", speedText, this.speedMetric, currentDistText);
                     break;
             }
         }
@@ -266,7 +267,7 @@ namespace IRacingSpeedTrainer
                 }
                 this.trackData = null;
                 this.addPositionButton.Enabled = false;
-                this.markersList.DataSource = null;
+                RebindMarkersList();
             }
             if (track != null)
             {
@@ -288,8 +289,25 @@ namespace IRacingSpeedTrainer
 
         private void TrackData_MarkersChanged(object? sender, IList<TrackMarker> markers)
         {
-            this.markersList.DataSource = new List<TrackMarker>(markers);
+            RebindMarkersList();
             this.monitor.UpdateMarkers(markers);
+        }
+
+        private void RebindMarkersList()
+        {
+            if (this.trackData != null)
+            {
+                var list = new List<TrackMarker>(this.trackData.Markers);
+                this.markersList.DataSource = list;
+                for (int i = 0; i < list.Count; i++)
+                {
+                    this.markersList.SetItemCheckState(i, list[i].Enabled ? CheckState.Checked : CheckState.Unchecked);
+                }
+            }
+            else
+            {
+                this.markersList.DataSource = null;
+            }
         }
 
         private void AnnounceSpeed(IList<float> speeds)
@@ -480,6 +498,7 @@ namespace IRacingSpeedTrainer
                 this.sayMaxExitCheckBox.Checked = settings.SayMaxExitSpeed;
                 this.sayMaxEntryCheckBox.Checked = settings.SayMaxEntrySpeed;
                 this.distanceMetric = settings.Units == 0 ? "m" : "ft";
+                this.speedMetric = settings.Units == 0 ? "km/h" : "mph";
                 this.distanceConversion = settings.Units == 0 ? 1f : 3.28084f;
                 this.speedConversion = UserSettings.Default.Units == 0 ? 2.23694f : 3.6f;
                 this.labelM1.Text = this.distanceMetric;
@@ -488,10 +507,7 @@ namespace IRacingSpeedTrainer
                 {
                     TrackMarker.DistanceLabel = this.distanceMetric;
                     TrackMarker.DistanceConversion = this.distanceConversion;
-                    if (this.trackData != null)
-                    {
-                        this.markersList.DataSource = new List<TrackMarker>(this.trackData.Markers);
-                    }
+                    RebindMarkersList();
                 }
             }
             finally
@@ -661,6 +677,14 @@ namespace IRacingSpeedTrainer
         {
             UserSettings.Default.Volume = (int)volumeSelector.Value;
             UpdateAnnouncementSettings();
+        }
+
+        private void markersList_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            if (this.trackData != null && this.trackData.Markers.Count > e.Index && e.Index >= 0)
+            {
+                this.trackData.Markers[e.Index].Enabled = e.NewValue == CheckState.Checked;
+            }
         }
     }
 }

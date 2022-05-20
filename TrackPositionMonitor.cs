@@ -67,7 +67,7 @@ namespace IRacingSpeedTrainer
                 }
             }
             var marker = this.TrackMarkers.GetMarkerAt(previousPosition, this.lastPosition);
-            if (marker == null)
+            if (marker == null || !marker.Enabled)
             {
                 return;
             }

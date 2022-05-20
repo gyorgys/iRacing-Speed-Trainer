@@ -32,7 +32,7 @@
             this.startStopButton = new System.Windows.Forms.Button();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.markersList = new System.Windows.Forms.ListBox();
+            this.markersList = new System.Windows.Forms.CheckedListBox();
             this.addPositionButton = new System.Windows.Forms.Button();
             this.gameControllersList = new System.Windows.Forms.ListBox();
             this.controllersLabel = new System.Windows.Forms.Label();
@@ -116,12 +116,12 @@
             // markersList
             // 
             this.markersList.FormattingEnabled = true;
-            this.markersList.ItemHeight = 20;
-            this.markersList.Location = new System.Drawing.Point(2, 101);
+            this.markersList.Location = new System.Drawing.Point(2, 97);
             this.markersList.Margin = new System.Windows.Forms.Padding(2);
             this.markersList.Name = "markersList";
-            this.markersList.Size = new System.Drawing.Size(390, 404);
+            this.markersList.Size = new System.Drawing.Size(390, 400);
             this.markersList.TabIndex = 2;
+            this.markersList.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.markersList_ItemCheck);
             this.markersList.SelectedIndexChanged += new System.EventHandler(this.pointsListBox_SelectedIndexChanged);
             // 
             // addPositionButton
@@ -158,7 +158,7 @@
             // trackMarkersLabel
             // 
             this.trackMarkersLabel.AutoSize = true;
-            this.trackMarkersLabel.Location = new System.Drawing.Point(3, 79);
+            this.trackMarkersLabel.Location = new System.Drawing.Point(3, 75);
             this.trackMarkersLabel.Margin = new System.Windows.Forms.Padding(3, 16, 3, 0);
             this.trackMarkersLabel.Name = "trackMarkersLabel";
             this.trackMarkersLabel.Size = new System.Drawing.Size(102, 20);
@@ -182,7 +182,7 @@
             this.manageMarkersGroup.Controls.Add(this.labelM1);
             this.manageMarkersGroup.Controls.Add(this.pointDistanceTextBox);
             this.manageMarkersGroup.Controls.Add(this.addPositionButton);
-            this.manageMarkersGroup.Location = new System.Drawing.Point(3, 510);
+            this.manageMarkersGroup.Location = new System.Drawing.Point(3, 502);
             this.manageMarkersGroup.Name = "manageMarkersGroup";
             this.manageMarkersGroup.Size = new System.Drawing.Size(329, 134);
             this.manageMarkersGroup.TabIndex = 14;
@@ -550,13 +550,13 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataLabel.AutoSize = true;
             this.dataLabel.BackColor = System.Drawing.SystemColors.MenuHighlight;
-            this.dataLabel.Font = new System.Drawing.Font("Consolas", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.dataLabel.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.dataLabel.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.dataLabel.Location = new System.Drawing.Point(8, 20);
             this.dataLabel.Margin = new System.Windows.Forms.Padding(8, 20, 8, 8);
             this.dataLabel.Name = "dataLabel";
             this.dataLabel.Padding = new System.Windows.Forms.Padding(4);
-            this.dataLabel.Size = new System.Drawing.Size(378, 35);
+            this.dataLabel.Size = new System.Drawing.Size(378, 31);
             this.dataLabel.TabIndex = 15;
             this.dataLabel.Text = "166 MPH    1456.4 - 1689.7";
             // 
@@ -600,7 +600,7 @@
         private Button startStopButton;
         private StatusStrip statusStrip;
         private ToolStripStatusLabel toolStripStatusLabel;
-        private ListBox markersList;
+        private CheckedListBox markersList;
         private Button addPositionButton;
         private ListBox gameControllersList;
         private Label controllersLabel;

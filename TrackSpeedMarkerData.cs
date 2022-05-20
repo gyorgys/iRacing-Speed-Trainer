@@ -18,7 +18,22 @@ namespace IRacingSpeedTrainer
         public float Start { get; private set; } = -1;
         public float End { get; private set; } = -1;
 
-        protected TrackMarker() {}
+        private bool enabled = true;
+        public bool Enabled { 
+            get => enabled;
+            set
+            {
+                if (value != this.enabled) 
+                { 
+                    this.enabled = value;
+                    this.Changed?.Invoke(this, new EventArgs());
+                }
+            } 
+        }
+
+        public event EventHandler? Changed;
+
+        protected TrackMarker() { }
 
         public TrackMarker(float position)
         {
@@ -28,7 +43,7 @@ namespace IRacingSpeedTrainer
             End = position;
         }
 
-        public TrackMarker(float start, float end) 
+        public TrackMarker(float start, float end)
         {
             if (start < 0)
                 throw new ArgumentOutOfRangeException(nameof(start));
@@ -45,11 +60,12 @@ namespace IRacingSpeedTrainer
             get { return this.Start != this.End; }
         }
 
-        public bool IsInvalid { 
+        public bool IsInvalid
+        {
             get
             {
                 return this.Start == -1;
-            }        
+            }
         }
 
         public bool Intersects(float position)
@@ -82,26 +98,33 @@ namespace IRacingSpeedTrainer
             var values = line.Split(' ');
             float startValue = 0;
             float endValue = 0;
+            bool enabled = true;
             if (values.Length > 0 && Single.TryParse(values[0], out startValue))
             {
+                if (startValue < 0)
+                {
+                    enabled = false;
+                    startValue = -startValue;
+                }
                 if (values.Length > 1 && Single.TryParse(values[1], out endValue))
                 {
-                    return new TrackMarker { End = endValue, Start = startValue };
+                    return new TrackMarker { End = endValue, Start = startValue, Enabled = enabled };
                 }
-                return new TrackMarker { End = startValue, Start = startValue };
+                return new TrackMarker { End = startValue, Start = startValue, Enabled = enabled };
             }
             return null;
         }
 
         public string Serialize()
         {
+            string prefix = this.Enabled ? "" : "-";
             if (this.IsRegion)
             {
-                return String.Format("{0} {1}", this.Start, this.End);
+                return String.Format("{2}{0} {1}", this.Start, this.End, prefix);
             }
             else
             {
-                return String.Format("{0}", this.Start);
+                return String.Format("{1}{0}", this.Start, prefix);
             }
         }
 
@@ -110,9 +133,9 @@ namespace IRacingSpeedTrainer
             if (this.IsRegion)
             {
                 return String.Format(
-                    "{0:0.0} {2} - {1:0.0} {2}", 
-                    this.Start * DistanceConversion, 
-                    this.End * DistanceConversion, 
+                    "{0:0.0} {2} - {1:0.0} {2}",
+                    this.Start * DistanceConversion,
+                    this.End * DistanceConversion,
                     DistanceLabel);
             }
             else
@@ -186,6 +209,7 @@ namespace IRacingSpeedTrainer
                             if (marker != null)
                             {
                                 this.markers.Add(marker.Start, marker);
+                                marker.Changed += Marker_Changed;
                             }
                         }
                     }
@@ -197,7 +221,7 @@ namespace IRacingSpeedTrainer
             return false;
         }
 
-        public bool AddMarker(TrackMarker newMarker)
+         public bool AddMarker(TrackMarker newMarker)
         {
             if (this.markers.Any(m => m.Value.Intersects(newMarker)))
             {
@@ -205,9 +229,15 @@ namespace IRacingSpeedTrainer
                 return false;
             }
             this.markers.Add(newMarker.Start, newMarker);
+            newMarker.Changed += Marker_Changed;
             this.IsDirty = true;
             this.MarkersChanged?.Invoke(this, this.Markers);
             return true;
+        }
+
+        private void Marker_Changed(object? sender, EventArgs e)
+        {
+            this.IsDirty = true;
         }
 
         public void DeleteMarkerAt(float position)

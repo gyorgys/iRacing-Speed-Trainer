@@ -495,11 +495,6 @@
             // 
             this.announcementSettingsLayoutPanel.SetFlowBreak(this.volumeSelector, true);
             this.volumeSelector.Location = new System.Drawing.Point(223, 101);
-            this.volumeSelector.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
             this.volumeSelector.Name = "volumeSelector";
             this.volumeSelector.Size = new System.Drawing.Size(63, 27);
             this.volumeSelector.TabIndex = 9;

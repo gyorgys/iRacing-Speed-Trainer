@@ -44,6 +44,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
             }
         }
         "Release"
@@ -51,7 +59,7 @@
         "DisplayName" = "8:Release"
         "IsDebugOnly" = "11:FALSE"
         "IsReleaseOnly" = "11:TRUE"
-        "OutputFilename" = "8:Release\\iRacing Speed Trainer Setup.msi"
+        "OutputFilename" = "8:Release\\iRacing Speed Trainer Setup 1_0_5.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -164,15 +172,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:iRacing Speed Trainer"
-        "ProductCode" = "8:{478A17DB-C5A3-47ED-980B-987A29735BF1}"
-        "PackageCode" = "8:{CABC28C7-A395-45E5-A8A0-D021A62B8882}"
+        "ProductCode" = "8:{2E57DA54-CB20-4847-8135-E86E1A8662DB}"
+        "PackageCode" = "8:{67D7CD9B-E406-4E47-84F1-84E67967AF05}"
         "UpgradeCode" = "8:{359A0977-A6F2-446B-8EBB-2301863037F7}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.0"
+        "ProductVersion" = "8:1.0.5"
         "Manufacturer" = "8:gyorgys"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"

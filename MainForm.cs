@@ -313,20 +313,27 @@ namespace IRacingSpeedTrainer
         private void AnnounceSpeed(IList<float> speeds)
         {
             var promptBuilder = new PromptBuilder();
-            string format = UserSettings.Default.SayTenths ? "0.0" : "0";
-            var convertedSpeeds = speeds.Select(s => s * this.speedConversion).ToArray();
-            foreach (var convertedSpeed in convertedSpeeds)
-            {
-                int hunderds = (int)Math.Floor(convertedSpeed / 100);
-                double remainder = convertedSpeed % 100;
-                if (hunderds > 0)
-                {
-                    promptBuilder.AppendText(hunderds.ToString());
-                    promptBuilder.AppendText(" ");
-                }
-                promptBuilder.AppendText(remainder.ToString(format));
-                promptBuilder.AppendBreak(PromptBreak.ExtraSmall);
-            }
+            var promptStyle = new PromptStyle { Volume = PromptVolume.ExtraLoud };
+            promptBuilder.AppendText("normal");
+
+            promptBuilder.StartStyle(promptStyle);
+            promptBuilder.AppendText("loud");
+            //string format = UserSettings.Default.SayTenths ? "0.0" : "0";
+            //var convertedSpeeds = speeds.Select(s => s * this.speedConversion).ToArray();
+            //foreach (var convertedSpeed in convertedSpeeds)
+            //{
+            //    int hunderds = (int)Math.Floor(convertedSpeed / 100);
+            //    double remainder = convertedSpeed % 100;
+            //    if (hunderds > 0)
+            //    {
+            //        promptBuilder.AppendText(hunderds.ToString());
+            //        promptBuilder.AppendText(" ");
+            //    }
+            //    promptBuilder.AppendText(remainder.ToString(format));
+            //    promptBuilder.AppendBreak(PromptBreak.ExtraSmall);
+            //}
+            promptBuilder.EndStyle();
+            promptBuilder.AppendText("normal");
             this.announcementQueue.Enqueue(new Prompt(promptBuilder));
             this.newAnnouncementEvent.Set();
         }
@@ -570,7 +577,7 @@ namespace IRacingSpeedTrainer
                 this.ErrorPrompt("Adding section failed", "End position must be a valid floating point number.");
                 return;
             }
-            bool success = this.trackData.AddMarker(new TrackMarker(startDistance, endDistance));
+            bool success = this.trackData.AddMarker(new TrackMarker(startDistance / this.distanceConversion, endDistance / this.distanceConversion));
             if (!success)
             {
                 this.ErrorPrompt("Adding point failed", "Position overlaps existing marker.");
@@ -588,7 +595,7 @@ namespace IRacingSpeedTrainer
             float distance = 0f;
             if (Single.TryParse(this.pointDistanceTextBox.Text, out distance))
             {
-                bool success = this.trackData.AddMarker(new TrackMarker(distance));
+                bool success = this.trackData.AddMarker(new TrackMarker(distance / this.distanceConversion));
                 if (!success)
                 {
                     this.ErrorPrompt("Adding point failed", "Position overlaps existing marker.");

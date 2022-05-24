@@ -85,10 +85,10 @@
             // startStopButton
             // 
             this.startStopButton.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.startStopButton.Location = new System.Drawing.Point(91, 16);
-            this.startStopButton.Margin = new System.Windows.Forms.Padding(0, 8, 0, 0);
+            this.startStopButton.Location = new System.Drawing.Point(115, 20);
+            this.startStopButton.Margin = new System.Windows.Forms.Padding(0, 10, 0, 0);
             this.startStopButton.Name = "startStopButton";
-            this.startStopButton.Size = new System.Drawing.Size(194, 47);
+            this.startStopButton.Size = new System.Drawing.Size(242, 59);
             this.startStopButton.TabIndex = 0;
             this.startStopButton.Text = "&Start";
             this.startStopButton.UseVisualStyleBackColor = true;
@@ -99,37 +99,36 @@
             this.statusStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel});
-            this.statusStrip.Location = new System.Drawing.Point(0, 660);
+            this.statusStrip.Location = new System.Drawing.Point(0, 826);
             this.statusStrip.Name = "statusStrip";
-            this.statusStrip.Padding = new System.Windows.Forms.Padding(1, 0, 11, 0);
-            this.statusStrip.Size = new System.Drawing.Size(792, 26);
+            this.statusStrip.Size = new System.Drawing.Size(990, 32);
             this.statusStrip.TabIndex = 1;
             this.statusStrip.Text = "statusStrip1";
             // 
             // toolStripStatusLabel
             // 
             this.toolStripStatusLabel.Name = "toolStripStatusLabel";
-            this.toolStripStatusLabel.Size = new System.Drawing.Size(143, 20);
+            this.toolStripStatusLabel.Size = new System.Drawing.Size(169, 25);
             this.toolStripStatusLabel.Text = "toolStripStatusLabel";
             this.toolStripStatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // markersList
             // 
             this.markersList.FormattingEnabled = true;
-            this.markersList.Location = new System.Drawing.Point(2, 97);
+            this.markersList.Location = new System.Drawing.Point(2, 120);
             this.markersList.Margin = new System.Windows.Forms.Padding(2);
             this.markersList.Name = "markersList";
-            this.markersList.Size = new System.Drawing.Size(390, 400);
+            this.markersList.Size = new System.Drawing.Size(486, 480);
             this.markersList.TabIndex = 2;
             this.markersList.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.markersList_ItemCheck);
             this.markersList.SelectedIndexChanged += new System.EventHandler(this.pointsListBox_SelectedIndexChanged);
             // 
             // addPositionButton
             // 
-            this.addPositionButton.Location = new System.Drawing.Point(5, 26);
+            this.addPositionButton.Location = new System.Drawing.Point(6, 32);
             this.addPositionButton.Margin = new System.Windows.Forms.Padding(2);
             this.addPositionButton.Name = "addPositionButton";
-            this.addPositionButton.Size = new System.Drawing.Size(116, 27);
+            this.addPositionButton.Size = new System.Drawing.Size(145, 34);
             this.addPositionButton.TabIndex = 3;
             this.addPositionButton.Text = "Add Point";
             this.addPositionButton.UseVisualStyleBackColor = true;
@@ -138,38 +137,40 @@
             // gameControllersList
             // 
             this.gameControllersList.FormattingEnabled = true;
-            this.gameControllersList.ItemHeight = 20;
-            this.gameControllersList.Location = new System.Drawing.Point(11, 339);
+            this.gameControllersList.ItemHeight = 25;
+            this.gameControllersList.Location = new System.Drawing.Point(14, 419);
+            this.gameControllersList.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.gameControllersList.Name = "gameControllersList";
             this.gameControllersList.SelectionMode = System.Windows.Forms.SelectionMode.None;
-            this.gameControllersList.Size = new System.Drawing.Size(355, 124);
+            this.gameControllersList.Size = new System.Drawing.Size(443, 154);
             this.gameControllersList.TabIndex = 3;
             // 
             // controllersLabel
             // 
             this.controllersLabel.AutoSize = true;
-            this.controllersLabel.Location = new System.Drawing.Point(11, 316);
-            this.controllersLabel.Margin = new System.Windows.Forms.Padding(3, 16, 3, 0);
+            this.controllersLabel.Location = new System.Drawing.Point(14, 390);
+            this.controllersLabel.Margin = new System.Windows.Forms.Padding(4, 20, 4, 0);
             this.controllersLabel.Name = "controllersLabel";
-            this.controllersLabel.Size = new System.Drawing.Size(157, 20);
+            this.controllersLabel.Size = new System.Drawing.Size(189, 25);
             this.controllersLabel.TabIndex = 2;
             this.controllersLabel.Text = "Connected controllers:";
             // 
             // trackMarkersLabel
             // 
             this.trackMarkersLabel.AutoSize = true;
-            this.trackMarkersLabel.Location = new System.Drawing.Point(3, 75);
-            this.trackMarkersLabel.Margin = new System.Windows.Forms.Padding(3, 16, 3, 0);
+            this.trackMarkersLabel.Location = new System.Drawing.Point(4, 93);
+            this.trackMarkersLabel.Margin = new System.Windows.Forms.Padding(4, 20, 4, 0);
             this.trackMarkersLabel.Name = "trackMarkersLabel";
-            this.trackMarkersLabel.Size = new System.Drawing.Size(102, 20);
+            this.trackMarkersLabel.Size = new System.Drawing.Size(123, 25);
             this.trackMarkersLabel.TabIndex = 12;
             this.trackMarkersLabel.Text = "Track Markers:";
             // 
             // pointDistanceTextBox
             // 
-            this.pointDistanceTextBox.Location = new System.Drawing.Point(126, 26);
+            this.pointDistanceTextBox.Location = new System.Drawing.Point(158, 32);
+            this.pointDistanceTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pointDistanceTextBox.Name = "pointDistanceTextBox";
-            this.pointDistanceTextBox.Size = new System.Drawing.Size(82, 27);
+            this.pointDistanceTextBox.Size = new System.Drawing.Size(102, 31);
             this.pointDistanceTextBox.TabIndex = 13;
             // 
             // manageMarkersGroup
@@ -182,19 +183,21 @@
             this.manageMarkersGroup.Controls.Add(this.labelM1);
             this.manageMarkersGroup.Controls.Add(this.pointDistanceTextBox);
             this.manageMarkersGroup.Controls.Add(this.addPositionButton);
-            this.manageMarkersGroup.Location = new System.Drawing.Point(3, 502);
+            this.manageMarkersGroup.Location = new System.Drawing.Point(4, 606);
+            this.manageMarkersGroup.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.manageMarkersGroup.Name = "manageMarkersGroup";
-            this.manageMarkersGroup.Size = new System.Drawing.Size(329, 134);
+            this.manageMarkersGroup.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.manageMarkersGroup.Size = new System.Drawing.Size(411, 168);
             this.manageMarkersGroup.TabIndex = 14;
             this.manageMarkersGroup.TabStop = false;
             this.manageMarkersGroup.Text = "Manage markers";
             // 
             // deleteMarkerButton
             // 
-            this.deleteMarkerButton.Location = new System.Drawing.Point(5, 90);
+            this.deleteMarkerButton.Location = new System.Drawing.Point(6, 112);
             this.deleteMarkerButton.Margin = new System.Windows.Forms.Padding(2);
             this.deleteMarkerButton.Name = "deleteMarkerButton";
-            this.deleteMarkerButton.Size = new System.Drawing.Size(116, 27);
+            this.deleteMarkerButton.Size = new System.Drawing.Size(145, 34);
             this.deleteMarkerButton.TabIndex = 19;
             this.deleteMarkerButton.Text = "Delete";
             this.deleteMarkerButton.UseVisualStyleBackColor = true;
@@ -202,33 +205,36 @@
             // 
             // regionEndDistanceTextBox
             // 
-            this.regionEndDistanceTextBox.Location = new System.Drawing.Point(214, 59);
+            this.regionEndDistanceTextBox.Location = new System.Drawing.Point(268, 74);
+            this.regionEndDistanceTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.regionEndDistanceTextBox.Name = "regionEndDistanceTextBox";
-            this.regionEndDistanceTextBox.Size = new System.Drawing.Size(82, 27);
+            this.regionEndDistanceTextBox.Size = new System.Drawing.Size(102, 31);
             this.regionEndDistanceTextBox.TabIndex = 18;
             // 
             // labelM2
             // 
             this.labelM2.AutoSize = true;
-            this.labelM2.Location = new System.Drawing.Point(299, 62);
+            this.labelM2.Location = new System.Drawing.Point(374, 78);
+            this.labelM2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelM2.Name = "labelM2";
-            this.labelM2.Size = new System.Drawing.Size(22, 20);
+            this.labelM2.Size = new System.Drawing.Size(28, 25);
             this.labelM2.TabIndex = 17;
             this.labelM2.Text = "m";
             // 
             // regionStartDistanceTextBox
             // 
-            this.regionStartDistanceTextBox.Location = new System.Drawing.Point(126, 59);
+            this.regionStartDistanceTextBox.Location = new System.Drawing.Point(158, 74);
+            this.regionStartDistanceTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.regionStartDistanceTextBox.Name = "regionStartDistanceTextBox";
-            this.regionStartDistanceTextBox.Size = new System.Drawing.Size(82, 27);
+            this.regionStartDistanceTextBox.Size = new System.Drawing.Size(102, 31);
             this.regionStartDistanceTextBox.TabIndex = 16;
             // 
             // addRegionButton
             // 
-            this.addRegionButton.Location = new System.Drawing.Point(5, 59);
+            this.addRegionButton.Location = new System.Drawing.Point(6, 74);
             this.addRegionButton.Margin = new System.Windows.Forms.Padding(2);
             this.addRegionButton.Name = "addRegionButton";
-            this.addRegionButton.Size = new System.Drawing.Size(116, 27);
+            this.addRegionButton.Size = new System.Drawing.Size(145, 34);
             this.addRegionButton.TabIndex = 15;
             this.addRegionButton.Text = "Add Section";
             this.addRegionButton.UseVisualStyleBackColor = true;
@@ -237,9 +243,10 @@
             // labelM1
             // 
             this.labelM1.AutoSize = true;
-            this.labelM1.Location = new System.Drawing.Point(214, 29);
+            this.labelM1.Location = new System.Drawing.Point(268, 36);
+            this.labelM1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelM1.Name = "labelM1";
-            this.labelM1.Size = new System.Drawing.Size(22, 20);
+            this.labelM1.Size = new System.Drawing.Size(28, 25);
             this.labelM1.TabIndex = 14;
             this.labelM1.Text = "m";
             // 
@@ -253,9 +260,11 @@
             this.controlsSettingsGroup.Controls.Add(this.setRegionControlButton);
             this.controlsSettingsGroup.Controls.Add(this.regionControlSettingLabel);
             this.controlsSettingsGroup.Controls.Add(this.setRegionControlLabel);
-            this.controlsSettingsGroup.Location = new System.Drawing.Point(11, 469);
+            this.controlsSettingsGroup.Location = new System.Drawing.Point(14, 581);
+            this.controlsSettingsGroup.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.controlsSettingsGroup.Name = "controlsSettingsGroup";
-            this.controlsSettingsGroup.Size = new System.Drawing.Size(355, 158);
+            this.controlsSettingsGroup.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.controlsSettingsGroup.Size = new System.Drawing.Size(444, 198);
             this.controlsSettingsGroup.TabIndex = 4;
             this.controlsSettingsGroup.TabStop = false;
             this.controlsSettingsGroup.Text = "&Controls:";
@@ -265,9 +274,10 @@
             this.enableMarkerRecordingCheckBox.AutoSize = true;
             this.enableMarkerRecordingCheckBox.Checked = true;
             this.enableMarkerRecordingCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.enableMarkerRecordingCheckBox.Location = new System.Drawing.Point(15, 128);
+            this.enableMarkerRecordingCheckBox.Location = new System.Drawing.Point(19, 160);
+            this.enableMarkerRecordingCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.enableMarkerRecordingCheckBox.Name = "enableMarkerRecordingCheckBox";
-            this.enableMarkerRecordingCheckBox.Size = new System.Drawing.Size(194, 24);
+            this.enableMarkerRecordingCheckBox.Size = new System.Drawing.Size(231, 29);
             this.enableMarkerRecordingCheckBox.TabIndex = 8;
             this.enableMarkerRecordingCheckBox.Text = "&Enable marker recording";
             this.enableMarkerRecordingCheckBox.UseVisualStyleBackColor = true;
@@ -275,9 +285,10 @@
             // 
             // setPointControlButton
             // 
-            this.setPointControlButton.Location = new System.Drawing.Point(278, 82);
+            this.setPointControlButton.Location = new System.Drawing.Point(348, 102);
+            this.setPointControlButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.setPointControlButton.Name = "setPointControlButton";
-            this.setPointControlButton.Size = new System.Drawing.Size(71, 31);
+            this.setPointControlButton.Size = new System.Drawing.Size(89, 39);
             this.setPointControlButton.TabIndex = 7;
             this.setPointControlButton.Text = "Change";
             this.setPointControlButton.UseVisualStyleBackColor = true;
@@ -286,18 +297,20 @@
             // pointControlSettingLabel
             // 
             this.pointControlSettingLabel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pointControlSettingLabel.Location = new System.Drawing.Point(140, 84);
+            this.pointControlSettingLabel.Location = new System.Drawing.Point(175, 105);
+            this.pointControlSettingLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.pointControlSettingLabel.Name = "pointControlSettingLabel";
-            this.pointControlSettingLabel.Size = new System.Drawing.Size(132, 27);
+            this.pointControlSettingLabel.Size = new System.Drawing.Size(164, 33);
             this.pointControlSettingLabel.TabIndex = 5;
             this.pointControlSettingLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // setPointControlLabel
             // 
             this.setPointControlLabel.AutoSize = true;
-            this.setPointControlLabel.Location = new System.Drawing.Point(6, 86);
+            this.setPointControlLabel.Location = new System.Drawing.Point(8, 108);
+            this.setPointControlLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.setPointControlLabel.Name = "setPointControlLabel";
-            this.setPointControlLabel.Size = new System.Drawing.Size(72, 20);
+            this.setPointControlLabel.Size = new System.Drawing.Size(88, 25);
             this.setPointControlLabel.TabIndex = 4;
             this.setPointControlLabel.Text = "Set point:";
             // 
@@ -306,9 +319,10 @@
             this.doubleClickPointSetCheckBox.AutoSize = true;
             this.doubleClickPointSetCheckBox.Checked = true;
             this.doubleClickPointSetCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.doubleClickPointSetCheckBox.Location = new System.Drawing.Point(15, 58);
+            this.doubleClickPointSetCheckBox.Location = new System.Drawing.Point(19, 72);
+            this.doubleClickPointSetCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.doubleClickPointSetCheckBox.Name = "doubleClickPointSetCheckBox";
-            this.doubleClickPointSetCheckBox.Size = new System.Drawing.Size(320, 24);
+            this.doubleClickPointSetCheckBox.Size = new System.Drawing.Size(384, 29);
             this.doubleClickPointSetCheckBox.TabIndex = 6;
             this.doubleClickPointSetCheckBox.Text = "Double click region button for point marker";
             this.doubleClickPointSetCheckBox.UseVisualStyleBackColor = true;
@@ -316,9 +330,10 @@
             // 
             // setRegionControlButton
             // 
-            this.setRegionControlButton.Location = new System.Drawing.Point(278, 19);
+            this.setRegionControlButton.Location = new System.Drawing.Point(348, 24);
+            this.setRegionControlButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.setRegionControlButton.Name = "setRegionControlButton";
-            this.setRegionControlButton.Size = new System.Drawing.Size(71, 31);
+            this.setRegionControlButton.Size = new System.Drawing.Size(89, 39);
             this.setRegionControlButton.TabIndex = 5;
             this.setRegionControlButton.Text = "Change";
             this.setRegionControlButton.UseVisualStyleBackColor = true;
@@ -327,18 +342,20 @@
             // regionControlSettingLabel
             // 
             this.regionControlSettingLabel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.regionControlSettingLabel.Location = new System.Drawing.Point(140, 21);
+            this.regionControlSettingLabel.Location = new System.Drawing.Point(175, 26);
+            this.regionControlSettingLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.regionControlSettingLabel.Name = "regionControlSettingLabel";
-            this.regionControlSettingLabel.Size = new System.Drawing.Size(132, 27);
+            this.regionControlSettingLabel.Size = new System.Drawing.Size(164, 33);
             this.regionControlSettingLabel.TabIndex = 1;
             this.regionControlSettingLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // setRegionControlLabel
             // 
             this.setRegionControlLabel.AutoSize = true;
-            this.setRegionControlLabel.Location = new System.Drawing.Point(6, 23);
+            this.setRegionControlLabel.Location = new System.Drawing.Point(8, 29);
+            this.setRegionControlLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.setRegionControlLabel.Name = "setRegionControlLabel";
-            this.setRegionControlLabel.Size = new System.Drawing.Size(129, 20);
+            this.setRegionControlLabel.Size = new System.Drawing.Size(155, 25);
             this.setRegionControlLabel.TabIndex = 0;
             this.setRegionControlLabel.Text = "Start / end region:";
             // 
@@ -346,11 +363,11 @@
             // 
             this.announcementSettingsGroup.AutoSize = true;
             this.announcementSettingsGroup.Controls.Add(this.announcementSettingsLayoutPanel);
-            this.announcementSettingsGroup.Location = new System.Drawing.Point(11, 79);
-            this.announcementSettingsGroup.Margin = new System.Windows.Forms.Padding(3, 16, 3, 3);
+            this.announcementSettingsGroup.Location = new System.Drawing.Point(14, 99);
+            this.announcementSettingsGroup.Margin = new System.Windows.Forms.Padding(4, 20, 4, 4);
             this.announcementSettingsGroup.Name = "announcementSettingsGroup";
-            this.announcementSettingsGroup.Padding = new System.Windows.Forms.Padding(3, 16, 3, 3);
-            this.announcementSettingsGroup.Size = new System.Drawing.Size(302, 218);
+            this.announcementSettingsGroup.Padding = new System.Windows.Forms.Padding(4, 20, 4, 4);
+            this.announcementSettingsGroup.Size = new System.Drawing.Size(378, 267);
             this.announcementSettingsGroup.TabIndex = 1;
             this.announcementSettingsGroup.TabStop = false;
             this.announcementSettingsGroup.Text = "&Announcement settings";
@@ -371,17 +388,19 @@
             this.announcementSettingsLayoutPanel.Controls.Add(this.volumeSelector);
             this.announcementSettingsLayoutPanel.Controls.Add(this.testAnnouncementButton);
             this.announcementSettingsLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.announcementSettingsLayoutPanel.Location = new System.Drawing.Point(3, 36);
+            this.announcementSettingsLayoutPanel.Location = new System.Drawing.Point(4, 44);
+            this.announcementSettingsLayoutPanel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.announcementSettingsLayoutPanel.Name = "announcementSettingsLayoutPanel";
-            this.announcementSettingsLayoutPanel.Size = new System.Drawing.Size(296, 179);
+            this.announcementSettingsLayoutPanel.Size = new System.Drawing.Size(370, 219);
             this.announcementSettingsLayoutPanel.TabIndex = 10;
             // 
             // unitsLabel
             // 
-            this.unitsLabel.Location = new System.Drawing.Point(3, 0);
+            this.unitsLabel.Location = new System.Drawing.Point(4, 0);
+            this.unitsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.unitsLabel.Name = "unitsLabel";
-            this.unitsLabel.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
-            this.unitsLabel.Size = new System.Drawing.Size(52, 26);
+            this.unitsLabel.Padding = new System.Windows.Forms.Padding(0, 8, 0, 0);
+            this.unitsLabel.Size = new System.Drawing.Size(65, 32);
             this.unitsLabel.TabIndex = 0;
             this.unitsLabel.Text = "Units:";
             this.unitsLabel.UseMnemonic = false;
@@ -393,9 +412,10 @@
             this.unitsSelector.Items.AddRange(new object[] {
             "Metric",
             "Imperial"});
-            this.unitsSelector.Location = new System.Drawing.Point(61, 3);
+            this.unitsSelector.Location = new System.Drawing.Point(77, 4);
+            this.unitsSelector.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.unitsSelector.Name = "unitsSelector";
-            this.unitsSelector.Size = new System.Drawing.Size(93, 28);
+            this.unitsSelector.Size = new System.Drawing.Size(115, 33);
             this.unitsSelector.TabIndex = 1;
             this.unitsSelector.SelectedIndexChanged += new System.EventHandler(this.speedUnitSelector_SelectedIndexChanged);
             // 
@@ -403,10 +423,11 @@
             // 
             this.sayTenthsCheckBox.AutoSize = true;
             this.announcementSettingsLayoutPanel.SetFlowBreak(this.sayTenthsCheckBox, true);
-            this.sayTenthsCheckBox.Location = new System.Drawing.Point(160, 3);
+            this.sayTenthsCheckBox.Location = new System.Drawing.Point(200, 4);
+            this.sayTenthsCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.sayTenthsCheckBox.Name = "sayTenthsCheckBox";
-            this.sayTenthsCheckBox.Padding = new System.Windows.Forms.Padding(16, 4, 0, 0);
-            this.sayTenthsCheckBox.Size = new System.Drawing.Size(114, 28);
+            this.sayTenthsCheckBox.Padding = new System.Windows.Forms.Padding(20, 5, 0, 0);
+            this.sayTenthsCheckBox.Size = new System.Drawing.Size(140, 34);
             this.sayTenthsCheckBox.TabIndex = 2;
             this.sayTenthsCheckBox.Text = "Say tenths";
             this.sayTenthsCheckBox.UseVisualStyleBackColor = true;
@@ -415,10 +436,11 @@
             // sayMaxExitCheckBox
             // 
             this.sayMaxExitCheckBox.AutoSize = true;
-            this.sayMaxExitCheckBox.Location = new System.Drawing.Point(3, 37);
+            this.sayMaxExitCheckBox.Location = new System.Drawing.Point(4, 46);
+            this.sayMaxExitCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.sayMaxExitCheckBox.Name = "sayMaxExitCheckBox";
-            this.sayMaxExitCheckBox.Padding = new System.Windows.Forms.Padding(24, 0, 0, 0);
-            this.sayMaxExitCheckBox.Size = new System.Drawing.Size(138, 24);
+            this.sayMaxExitCheckBox.Padding = new System.Windows.Forms.Padding(30, 0, 0, 0);
+            this.sayMaxExitCheckBox.Size = new System.Drawing.Size(166, 29);
             this.sayMaxExitCheckBox.TabIndex = 3;
             this.sayMaxExitCheckBox.Text = "Say max exit";
             this.sayMaxExitCheckBox.UseVisualStyleBackColor = true;
@@ -428,9 +450,10 @@
             // 
             this.sayMaxEntryCheckBox.AutoSize = true;
             this.announcementSettingsLayoutPanel.SetFlowBreak(this.sayMaxEntryCheckBox, true);
-            this.sayMaxEntryCheckBox.Location = new System.Drawing.Point(147, 37);
+            this.sayMaxEntryCheckBox.Location = new System.Drawing.Point(178, 46);
+            this.sayMaxEntryCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.sayMaxEntryCheckBox.Name = "sayMaxEntryCheckBox";
-            this.sayMaxEntryCheckBox.Size = new System.Drawing.Size(123, 24);
+            this.sayMaxEntryCheckBox.Size = new System.Drawing.Size(149, 29);
             this.sayMaxEntryCheckBox.TabIndex = 4;
             this.sayMaxEntryCheckBox.Text = "Say max entry";
             this.sayMaxEntryCheckBox.UseVisualStyleBackColor = true;
@@ -438,10 +461,11 @@
             // 
             // voiceLabel
             // 
-            this.voiceLabel.Location = new System.Drawing.Point(3, 64);
+            this.voiceLabel.Location = new System.Drawing.Point(4, 79);
+            this.voiceLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.voiceLabel.Name = "voiceLabel";
-            this.voiceLabel.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
-            this.voiceLabel.Size = new System.Drawing.Size(52, 26);
+            this.voiceLabel.Padding = new System.Windows.Forms.Padding(0, 8, 0, 0);
+            this.voiceLabel.Size = new System.Drawing.Size(65, 32);
             this.voiceLabel.TabIndex = 5;
             this.voiceLabel.Text = "Voice:";
             // 
@@ -450,23 +474,26 @@
             this.voiceSelector.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.announcementSettingsLayoutPanel.SetFlowBreak(this.voiceSelector, true);
             this.voiceSelector.FormattingEnabled = true;
-            this.voiceSelector.Location = new System.Drawing.Point(61, 67);
+            this.voiceSelector.Location = new System.Drawing.Point(77, 83);
+            this.voiceSelector.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.voiceSelector.Name = "voiceSelector";
-            this.voiceSelector.Size = new System.Drawing.Size(232, 28);
+            this.voiceSelector.Size = new System.Drawing.Size(289, 33);
             this.voiceSelector.TabIndex = 6;
             // 
             // voiceSpeedLabel
             // 
-            this.voiceSpeedLabel.Location = new System.Drawing.Point(3, 98);
+            this.voiceSpeedLabel.Location = new System.Drawing.Point(4, 120);
+            this.voiceSpeedLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.voiceSpeedLabel.Name = "voiceSpeedLabel";
-            this.voiceSpeedLabel.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
-            this.voiceSpeedLabel.Size = new System.Drawing.Size(72, 26);
+            this.voiceSpeedLabel.Padding = new System.Windows.Forms.Padding(0, 8, 0, 0);
+            this.voiceSpeedLabel.Size = new System.Drawing.Size(90, 32);
             this.voiceSpeedLabel.TabIndex = 7;
             this.voiceSpeedLabel.Text = "Speed:";
             // 
             // speedSelector
             // 
-            this.speedSelector.Location = new System.Drawing.Point(81, 101);
+            this.speedSelector.Location = new System.Drawing.Point(102, 124);
+            this.speedSelector.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.speedSelector.Maximum = new decimal(new int[] {
             10,
             0,
@@ -478,35 +505,42 @@
             0,
             -2147483648});
             this.speedSelector.Name = "speedSelector";
-            this.speedSelector.Size = new System.Drawing.Size(63, 27);
+            this.speedSelector.Size = new System.Drawing.Size(79, 31);
             this.speedSelector.TabIndex = 8;
             this.speedSelector.ValueChanged += new System.EventHandler(this.speedSelector_ValueChanged);
             // 
             // voiceVolumeLabel
             // 
-            this.voiceVolumeLabel.Location = new System.Drawing.Point(150, 98);
+            this.voiceVolumeLabel.Location = new System.Drawing.Point(189, 120);
+            this.voiceVolumeLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.voiceVolumeLabel.Name = "voiceVolumeLabel";
-            this.voiceVolumeLabel.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
-            this.voiceVolumeLabel.Size = new System.Drawing.Size(67, 26);
+            this.voiceVolumeLabel.Padding = new System.Windows.Forms.Padding(0, 8, 0, 0);
+            this.voiceVolumeLabel.Size = new System.Drawing.Size(84, 32);
             this.voiceVolumeLabel.TabIndex = 7;
             this.voiceVolumeLabel.Text = "Volume:";
             // 
             // volumeSelector
             // 
             this.announcementSettingsLayoutPanel.SetFlowBreak(this.volumeSelector, true);
-            this.volumeSelector.Location = new System.Drawing.Point(223, 101);
+            this.volumeSelector.Location = new System.Drawing.Point(281, 124);
+            this.volumeSelector.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.volumeSelector.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
             this.volumeSelector.Name = "volumeSelector";
-            this.volumeSelector.Size = new System.Drawing.Size(63, 27);
+            this.volumeSelector.Size = new System.Drawing.Size(79, 31);
             this.volumeSelector.TabIndex = 9;
             this.volumeSelector.ValueChanged += new System.EventHandler(this.volumeSelector_ValueChanged);
             // 
             // testAnnouncementButton
             // 
             this.testAnnouncementButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.testAnnouncementButton.Location = new System.Drawing.Point(58, 147);
-            this.testAnnouncementButton.Margin = new System.Windows.Forms.Padding(58, 16, 3, 3);
+            this.testAnnouncementButton.Location = new System.Drawing.Point(72, 179);
+            this.testAnnouncementButton.Margin = new System.Windows.Forms.Padding(72, 20, 4, 4);
             this.testAnnouncementButton.Name = "testAnnouncementButton";
-            this.testAnnouncementButton.Size = new System.Drawing.Size(103, 29);
+            this.testAnnouncementButton.Size = new System.Drawing.Size(129, 36);
             this.testAnnouncementButton.TabIndex = 10;
             this.testAnnouncementButton.Text = "&Test";
             this.testAnnouncementButton.UseVisualStyleBackColor = true;
@@ -521,10 +555,10 @@
             this.leftPanel.Controls.Add(this.controlsSettingsGroup);
             this.leftPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.leftPanel.Location = new System.Drawing.Point(0, -1);
-            this.leftPanel.Margin = new System.Windows.Forms.Padding(8);
+            this.leftPanel.Margin = new System.Windows.Forms.Padding(10, 10, 10, 10);
             this.leftPanel.Name = "leftPanel";
-            this.leftPanel.Padding = new System.Windows.Forms.Padding(8);
-            this.leftPanel.Size = new System.Drawing.Size(375, 658);
+            this.leftPanel.Padding = new System.Windows.Forms.Padding(10, 10, 10, 10);
+            this.leftPanel.Size = new System.Drawing.Size(469, 822);
             this.leftPanel.TabIndex = 17;
             // 
             // rightPanel
@@ -534,9 +568,10 @@
             this.rightPanel.Controls.Add(this.markersList);
             this.rightPanel.Controls.Add(this.manageMarkersGroup);
             this.rightPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.rightPanel.Location = new System.Drawing.Point(381, -1);
+            this.rightPanel.Location = new System.Drawing.Point(476, -1);
+            this.rightPanel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.rightPanel.Name = "rightPanel";
-            this.rightPanel.Size = new System.Drawing.Size(411, 658);
+            this.rightPanel.Size = new System.Drawing.Size(514, 822);
             this.rightPanel.TabIndex = 18;
             // 
             // dataLabel
@@ -547,19 +582,19 @@
             this.dataLabel.BackColor = System.Drawing.SystemColors.MenuHighlight;
             this.dataLabel.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.dataLabel.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.dataLabel.Location = new System.Drawing.Point(8, 20);
-            this.dataLabel.Margin = new System.Windows.Forms.Padding(8, 20, 8, 8);
+            this.dataLabel.Location = new System.Drawing.Point(10, 25);
+            this.dataLabel.Margin = new System.Windows.Forms.Padding(10, 25, 10, 10);
             this.dataLabel.Name = "dataLabel";
-            this.dataLabel.Padding = new System.Windows.Forms.Padding(4);
-            this.dataLabel.Size = new System.Drawing.Size(378, 31);
+            this.dataLabel.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.dataLabel.Size = new System.Drawing.Size(470, 38);
             this.dataLabel.TabIndex = 15;
             this.dataLabel.Text = "166 MPH    1456.4 - 1689.7";
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(792, 686);
+            this.ClientSize = new System.Drawing.Size(990, 858);
             this.Controls.Add(this.rightPanel);
             this.Controls.Add(this.leftPanel);
             this.Controls.Add(this.statusStrip);

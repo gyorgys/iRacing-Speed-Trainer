@@ -314,26 +314,22 @@ namespace IRacingSpeedTrainer
         {
             var promptBuilder = new PromptBuilder();
             var promptStyle = new PromptStyle { Volume = PromptVolume.ExtraLoud };
-            promptBuilder.AppendText("normal");
-
             promptBuilder.StartStyle(promptStyle);
-            promptBuilder.AppendText("loud");
-            //string format = UserSettings.Default.SayTenths ? "0.0" : "0";
-            //var convertedSpeeds = speeds.Select(s => s * this.speedConversion).ToArray();
-            //foreach (var convertedSpeed in convertedSpeeds)
-            //{
-            //    int hunderds = (int)Math.Floor(convertedSpeed / 100);
-            //    double remainder = convertedSpeed % 100;
-            //    if (hunderds > 0)
-            //    {
-            //        promptBuilder.AppendText(hunderds.ToString());
-            //        promptBuilder.AppendText(" ");
-            //    }
-            //    promptBuilder.AppendText(remainder.ToString(format));
-            //    promptBuilder.AppendBreak(PromptBreak.ExtraSmall);
-            //}
+            string format = UserSettings.Default.SayTenths ? "0.0" : "0";
+            var convertedSpeeds = speeds.Select(s => s * this.speedConversion).ToArray();
+            foreach (var convertedSpeed in convertedSpeeds)
+            {
+                int hunderds = (int)Math.Floor(convertedSpeed / 100);
+                double remainder = convertedSpeed % 100;
+                if (hunderds > 0)
+                {
+                    promptBuilder.AppendText(hunderds.ToString());
+                    promptBuilder.AppendText(" ");
+                }
+                promptBuilder.AppendText(remainder.ToString(format));
+                promptBuilder.AppendBreak(PromptBreak.ExtraSmall);
+            }
             promptBuilder.EndStyle();
-            promptBuilder.AppendText("normal");
             this.announcementQueue.Enqueue(new Prompt(promptBuilder));
             this.newAnnouncementEvent.Set();
         }
